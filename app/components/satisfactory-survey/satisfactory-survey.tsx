@@ -16,7 +16,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
     setIsSubmitting(true);
     try {
       const response = await fetch(`${API_BASE_URL}/chats/conversations/satisfaction/`, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
