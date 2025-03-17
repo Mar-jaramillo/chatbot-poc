@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { IconArrowLeft, IconMessageCircle } from '@tabler/icons-react';
+import { IconArrowLeft, IconMessageChatbot } from '@tabler/icons-react';
 import { DeepChat } from 'deep-chat-react';
 import { IntroMessage } from 'deep-chat/dist/types/messages';
 import { ActionIcon, Button, Group, Paper, Popover, Text } from '@mantine/core';
@@ -183,7 +183,7 @@ export function Welcome() {
           <ActionIcon
             variant="filled"
             color="blue"
-            size="xl"
+            size="4rem"
             radius="xl"
             aria-label="Abrir chat"
             onClick={toggle}
@@ -194,7 +194,7 @@ export function Welcome() {
               zIndex: 1000,
             }}
           >
-            <IconMessageCircle size={24} stroke={1.5} />
+            <IconMessageChatbot size={40} stroke={1.5} />
           </ActionIcon>
         </Popover.Target>
 

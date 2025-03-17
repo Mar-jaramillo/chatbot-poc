@@ -24,6 +24,7 @@
     "@mantine/core": "7.16.2",
     "@mantine/dates": "^7.16.2",
     "@mantine/hooks": "7.16.2",
+    "@mantine/notifications": "^7.16.2",
     "@next/bundle-analyzer": "^15.1.5",
     "@tabler/icons-react": "^3.29.0",
     "deep-chat-react": "^2.1.1",
