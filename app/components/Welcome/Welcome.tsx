@@ -4,15 +4,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { IconArrowLeft, IconCheck, IconMessageChatbot } from '@tabler/icons-react';
 import { DeepChat } from 'deep-chat-react';
 import { IntroMessage } from 'deep-chat/dist/types/messages';
-import {
-  ActionIcon,
-  BlockquoteStylesNames,
-  Button,
-  Group,
-  Paper,
-  Popover,
-  Text,
-} from '@mantine/core';
+import { ActionIcon, Button, Group, Paper, Popover, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
@@ -31,6 +23,7 @@ interface MessageContent {
 export function Welcome() {
   const [opened, { toggle }] = useDisclosure(false);
   const deepChatRef = useRef(null);
+  const isProcessingSatisfaction = useRef(false);
 
   const {
     userServerResponse,
@@ -50,6 +43,8 @@ export function Welcome() {
     if (!userServerResponse?.id) {
       return;
     }
+
+    isProcessingSatisfaction.current = true;
 
     try {
       const response = await fetch(`${API_BASE_URL}/chats/conversations/satisfaction/`, {
@@ -77,10 +72,14 @@ export function Welcome() {
       });
     } catch (error) {
       console.error('Error al enviar feedback:', error);
+    } finally {
+      setTimeout(() => {
+        isProcessingSatisfaction.current = false;
+      }, 500);
     }
   };
 
-  // HTML para los botones de satisfacción
+  // HTML para los botones de satisfacción - usamos identificadores únicos
   const getSatisfactionHtml = () => `
     <div class="deep-chat-temporary-message" style="display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: center; margin-top: 8px;">
       <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center; color: #495057; font-size: 14px;">
@@ -88,14 +87,14 @@ export function Welcome() {
       </div>
       <div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px;">
         <button
-          class="deep-chat-button deep-chat-suggestion-button"
+          class="satisfaction-button satisfaction-yes"
           onclick="window.postMessage({type: 'satisfactionFeedback', value: true}, '*')"
           style="padding: 8px 20px; border: 1px solid #12B886; border-radius: 4px; background-color: white; color: #12B886; font-weight: 500;"
         >
           Sí
         </button>
         <button
-          class="deep-chat-button deep-chat-suggestion-button"
+          class="satisfaction-button satisfaction-no"
           onclick="window.postMessage({type: 'satisfactionFeedback', value: false}, '*')"
           style="padding: 8px 20px; border: 1px solid #FA5252; border-radius: 4px; background-color: white; color: #FA5252; font-weight: 500;"
         >
@@ -129,17 +128,55 @@ export function Welcome() {
   `,
     []
   );
+
   // Escuchar mensajes de la ventana para los botones de satisfacción
   useEffect(() => {
-    const handleCustomEvent = (event) => {
+    // Función para prevenir que los botones de satisfacción envíen mensajes
+    const preventSatisfactionSubmit = (e: MouseEvent) => {
+      // Verificar si el clic fue en un botón de satisfacción
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('satisfaction-button')) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Determinar qué tipo de botón de satisfacción se hizo clic
+        const isSatisfied = target.classList.contains('satisfaction-yes');
+
+        // Enviar feedback
+        submitFeedback(isSatisfied);
+
+        // Actualizar la UI para dar retroalimentación visual
+        const satisfactionContainer = target.closest('.deep-chat-temporary-message');
+        if (satisfactionContainer) {
+          satisfactionContainer.innerHTML = `
+            <div style="background-color: #e9fef6; padding: 12px; border-radius: 8px; text-align: center; color: #12B886; font-size: 14px;">
+              ¡Gracias por tu feedback!
+            </div>
+          `;
+        }
+
+        return false;
+      }
+    };
+
+    // Agregar handler para clics en el documento
+    document.addEventListener('click', preventSatisfactionSubmit as unknown as EventListener, true);
+
+    // Handler para mensajes de window.postMessage
+    const handleCustomEvent = (event: MessageEvent) => {
       if (event.data.type === 'satisfactionFeedback') {
-        // Procesar la retroalimentación de satisfacción
         submitFeedback(event.data.value);
       }
     };
 
     window.addEventListener('message', handleCustomEvent);
+
     return () => {
+      document.removeEventListener(
+        'click',
+        preventSatisfactionSubmit as unknown as EventListener,
+        true
+      );
       window.removeEventListener('message', handleCustomEvent);
     };
   }, [userServerResponse]);
@@ -153,17 +190,29 @@ export function Welcome() {
   const connect = {
     handler: async (body: { messages: MessageContent[] }, signals: any) => {
       try {
+        // Si estamos procesando una respuesta de satisfacción, no hacer nada
+        if (isProcessingSatisfaction.current) {
+          return;
+        }
+
         const lastMessage = body.messages?.[body.messages.length - 1]?.text;
+
+        // Verificar si parece una respuesta de satisfacción
+        if (lastMessage && (lastMessage === 'Sí' || lastMessage === 'No')) {
+          // No enviar estos mensajes al servidor
+          return;
+        }
 
         if (!lastMessage) {
           signals.onResponse({ error: 'Mensaje no válido' });
           return;
         }
-        // Obtener el ID del usuario de la respuesta del servidor
+
+        // Obtener el ID del usuario
         const userId = userServerResponse?.id;
 
         // Conexión normal a la API
-        const response = await fetch('http://localhost:8000/api/v1/chats/conversations/ask/', {
+        const response = await fetch(`${API_BASE_URL}/chats/conversations/ask/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -171,17 +220,33 @@ export function Welcome() {
           },
           body: JSON.stringify({
             customer_query: lastMessage,
-            customer_id: userId, // Enviar el usuario con ID
+            customer_id: userId,
           }),
         });
 
+        // Verificar si hubo un error
         if (!response.ok) {
+          const errorData = await response.json();
+          // Manejar el error específico de límite de preguntas
+          if (
+            errorData.type === 'validation_error' &&
+            errorData.errors &&
+            errorData.errors.some((err) => err.code === 'question_limit_exceeded')
+          ) {
+            signals.onResponse({
+              error: 'Has alcanzado el límite de preguntas para esta conversación.',
+            });
+
+            return;
+          }
+
+          // Para otros errores
           throw new Error('Error en la respuesta del servidor');
         }
 
         const data = await response.json();
 
-        // Respuesta con la encuesta de satisfacción integrada
+        // Respuesta con la encuesta de satisfacción integrada como HTML
         signals.onResponse({
           text: data.chat_response,
           role: 'assistant',
@@ -192,6 +257,15 @@ export function Welcome() {
           error: 'Error de conexión con el servidor. Por favor, intenta más tarde.',
         });
       }
+    },
+  };
+
+  // Configuración simple de errorMessages según la documentación
+  const errorMessages = {
+    displayServiceErrorMessages: false,
+    overrides: {
+      default: 'Lo sentimos, ha ocurrido un error. Por favor, inténtalo de nuevo.',
+      service: 'Has alcanzado el límite de preguntas para esta conversación.',
     },
   };
 
@@ -207,7 +281,7 @@ export function Welcome() {
           <GenerateReport
             reportData={reportData}
             onUpdateData={handleReportUpdate}
-            ref={deepChatRef}
+            onComplete={handleReportComplete}
             onCancel={handleReportCancel}
           />
         );
@@ -230,9 +304,11 @@ export function Welcome() {
       case 'chat':
         return (
           <DeepChat
+            ref={deepChatRef}
             connect={connect}
             style={{ border: 'none' }}
             introMessage={initialMessages}
+            errorMessages={errorMessages}
             messageStyles={{
               html: {
                 shared: {
@@ -273,6 +349,7 @@ export function Welcome() {
         return <Text>Error: Vista no encontrada</Text>;
     }
   };
+
   // Componente para mostrar el botón de volver al menú (solo en la vista de chat)
   const BackToMenuButton = () => {
     if (currentView !== 'chat') {
