@@ -17,6 +17,8 @@ interface AppContextProps {
   handleReportComplete: (data: ReportData['data']) => void;
   handleReportCancel: () => void;
   handleMenuSelection: (option: 'chat' | 'report') => void;
+  handleSurveyComplete: () => void;
+  handleSurveyError: (error: Error) => void;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -73,13 +75,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        alert('Reporte enviado exitosamente');
-        setReportData({
-          currentStep: '',
-          data: {},
-          isComplete: false,
-        });
-        setCurrentView('menu');
+        // En lugar de ir al menú, vamos a la encuesta
+        setCurrentView('survey');
       } else {
         throw new Error('Error al crear el reporte');
       }
@@ -88,7 +85,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       alert('Error al enviar el reporte. Por favor, intenta nuevamente.');
     }
   };
+  const handleSurveyComplete = () => {
+    alert('¡Gracias por tu feedback!');
+    setCurrentView('menu');
+  };
 
+  const handleSurveyError = (error: Error) => {
+    console.error('Error en la encuesta:', error);
+    alert('Error al enviar tu respuesta, pero tu reporte ha sido guardado correctamente.');
+    setCurrentView('menu');
+  };
   const handleReportUpdate = (data: ReportData['data']) => {
     setReportData((prev) => ({
       ...prev,
@@ -131,6 +137,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     handleReportComplete,
     handleReportCancel,
     handleMenuSelection,
+    handleSurveyComplete,
+    handleSurveyError,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

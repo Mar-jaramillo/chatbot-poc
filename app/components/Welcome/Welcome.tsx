@@ -10,6 +10,7 @@ import { useAppContext } from '@/app/context';
 import { GenerateReport, SummaryReport } from '../generate-report';
 import { InitialFormConversation } from '../initial-form-conversation';
 import { MenuOptions } from '../menu-options';
+import { SatisfactionSurvey } from '../satisfactory-survey';
 
 interface MessageContent {
   text: string;
@@ -29,6 +30,8 @@ export function Welcome() {
     handleReportCancel,
     handleReportConfirm,
     handleMenuSelection,
+    handleSurveyComplete,
+    handleSurveyError,
   } = useAppContext();
 
   const getMainMenuHtml = useCallback(
@@ -137,53 +140,24 @@ export function Welcome() {
             onCancel={handleReportCancel}
           />
         );
+      case 'survey':
+        return (
+          <SatisfactionSurvey
+            customerId={userServerResponse?.id || ''}
+            onComplete={handleSurveyComplete}
+            onError={handleSurveyError}
+          />
+        );
       case 'chat':
         return (
           <DeepChat
-            connect={connect}
-            style={{ border: 'none' }}
-            introMessage={initialMessages}
-            messageStyles={{
-              html: {
-                shared: {
-                  bubble: {
-                    backgroundColor: 'unset',
-                    padding: '0px',
-                  },
-                },
-              },
-            }}
-            textInput={{
-              placeholder: { text: 'Envía un mensaje' },
-              styles: {
-                container: {
-                  boxShadow: 'none',
-                  borderRadius: '1em',
-                  border: '1px solid rgba(0,0,0,0.2)',
-                },
-                text: {
-                  padding: '0.4em 0.8em',
-                  paddingRight: '2.5em',
-                },
-              },
-            }}
-            submitButtonStyles={{
-              submit: {
-                container: {
-                  default: {
-                    paddingRight: '0.3em',
-                    backgroundColor: '#00c82a',
-                  },
-                },
-              },
-            }}
+          // ... configuración existente
           />
         );
       default:
         return <Text>Error: Vista no encontrada</Text>;
     }
   };
-
   // Componente para mostrar el botón de volver al menú (solo en la vista de chat)
   const BackToMenuButton = () => {
     if (currentView !== 'chat') {

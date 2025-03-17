@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import {
   ActionIcon,
@@ -29,33 +29,29 @@ export function GenerateReport() {
   const [currentStep, setCurrentStep] = useState<keyof typeof REPORT_STEPS>('LOCATION');
   const [formData, setFormData] = useState<ReportData['data']>(reportData.data || {});
 
-  // Estado para los campos de formulario por paso
-  const [locationData, setLocationData] = useState({
-    incident_address: formData.incident_address || '',
-    administrative_area: formData.administrative_area || '',
-    neighborhood: formData.neighborhood || '',
-  });
+  // Efecto para actualizar formData si cambia reportData
+  useEffect(() => {
+    if (reportData.data) {
+      setFormData(reportData.data);
+    }
+  }, [reportData]);
 
-  const [detailsData, setDetailsData] = useState({
-    request_date: formData.request_date || '',
-    description: formData.description || '',
-    referred_to: formData.referred_to || '',
-  });
+  // Función para actualizar formData
+  const updateFormData = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   // Función para manejar la navegación entre pasos
   const goToNextStep = () => {
     if (currentStep === 'LOCATION') {
       setCurrentStep('DETAILS');
     } else if (currentStep === 'DETAILS') {
-      // Completar el formulario
-      const updatedData = {
-        ...formData,
-        ...locationData,
-        ...detailsData,
-      };
-
-      handleReportUpdate(updatedData);
-      handleReportComplete(updatedData);
+      // Actualizar y completar el formulario
+      handleReportUpdate(formData);
+      handleReportComplete(formData);
     }
   };
 
@@ -68,17 +64,17 @@ export function GenerateReport() {
   // Validación de campos por paso
   const isLocationStepValid = () => {
     return (
-      locationData.incident_address.trim() !== '' &&
-      locationData.administrative_area.trim() !== '' &&
-      locationData.neighborhood.trim() !== ''
+      (formData.incident_address || '').trim() !== '' &&
+      (formData.administrative_area || '').trim() !== '' &&
+      (formData.neighborhood || '').trim() !== ''
     );
   };
 
   const isDetailsStepValid = () => {
     return (
-      detailsData.request_date.trim() !== '' &&
-      detailsData.description.trim() !== '' &&
-      detailsData.referred_to.trim() !== ''
+      (formData.request_date || '').trim() !== '' &&
+      (formData.description || '').trim() !== '' &&
+      (formData.referred_to || '').trim() !== ''
     );
   };
 
@@ -95,28 +91,24 @@ export function GenerateReport() {
               <TextInput
                 label="Dirección"
                 placeholder="Ingresa la dirección completa"
-                value={locationData.incident_address}
-                onChange={(e) =>
-                  setLocationData({ ...locationData, incident_address: e.target.value })
-                }
+                value={formData.incident_address || ''}
+                onChange={(e) => updateFormData('incident_address', e.target.value)}
                 required
               />
 
               <TextInput
                 label="Comuna"
                 placeholder="Ingresa la comuna"
-                value={locationData.administrative_area}
-                onChange={(e) =>
-                  setLocationData({ ...locationData, administrative_area: e.target.value })
-                }
+                value={formData.administrative_area || ''}
+                onChange={(e) => updateFormData('administrative_area', e.target.value)}
                 required
               />
 
               <TextInput
                 label="Barrio"
                 placeholder="Ingresa el barrio"
-                value={locationData.neighborhood}
-                onChange={(e) => setLocationData({ ...locationData, neighborhood: e.target.value })}
+                value={formData.neighborhood || ''}
+                onChange={(e) => updateFormData('neighborhood', e.target.value)}
                 required
               />
 
@@ -140,13 +132,8 @@ export function GenerateReport() {
                 type="date"
                 label="Fecha del Incidente"
                 placeholder="Selecciona la fecha"
-                value={detailsData.request_date || ''}
-                onChange={(e) =>
-                  setDetailsData({
-                    ...detailsData,
-                    request_date: e.target.value,
-                  })
-                }
+                value={formData.request_date || ''}
+                onChange={(e) => updateFormData('request_date', e.target.value)}
                 required
               />
 
@@ -154,8 +141,8 @@ export function GenerateReport() {
                 label="Descripción"
                 placeholder="Describe la situación detalladamente"
                 minRows={3}
-                value={detailsData.description}
-                onChange={(e) => setDetailsData({ ...detailsData, description: e.target.value })}
+                value={formData.description || ''}
+                onChange={(e) => updateFormData('description', e.target.value)}
                 required
               />
 
@@ -163,10 +150,8 @@ export function GenerateReport() {
                 Equipo *
               </Text>
               <Chip.Group
-                value={detailsData.referred_to}
-                onChange={(value) =>
-                  setDetailsData({ ...detailsData, referred_to: value as string })
-                }
+                value={formData.referred_to || ''}
+                onChange={(value) => updateFormData('referred_to', value as string)}
               >
                 <Group gap="md">
                   <Chip value="POLICE">POLICE</Chip>

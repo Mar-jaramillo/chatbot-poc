@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export type ViewType = 'login' | 'menu' | 'chat' | 'report' | 'summary';
+export type ViewType = 'login' | 'menu' | 'chat' | 'report' | 'summary' | 'survey';
 
 export type CostumerInitialInfo = {
   id?: string;
