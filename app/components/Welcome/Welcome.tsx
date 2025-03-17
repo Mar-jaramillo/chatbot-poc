@@ -204,7 +204,11 @@ export function Welcome() {
         }
 
         if (!lastMessage) {
-          signals.onResponse({ error: 'Mensaje no válido' });
+          // Enviar un mensaje de error amigable al chat
+          signals.onResponse({
+            text: 'Por favor, ingresa un mensaje válido.',
+            role: 'assistant',
+          });
           return;
         }
 
@@ -227,34 +231,50 @@ export function Welcome() {
         // Verificar si hubo un error
         if (!response.ok) {
           const errorData = await response.json();
+
           // Manejar el error específico de límite de preguntas
           if (
             errorData.type === 'validation_error' &&
             errorData.errors &&
             errorData.errors.some((err) => err.code === 'question_limit_exceeded')
           ) {
+            // Enviar un mensaje amigable al chat sobre el límite alcanzado
             signals.onResponse({
-              error: 'Has alcanzado el límite de preguntas para esta conversación.',
+              text: 'Has alcanzado el límite de preguntas para esta conversación. Si necesitas seguir conversando, por favor vuelve al menú principal.',
+              role: 'assistant',
             });
-
             return;
           }
 
-          // Para otros errores
-          throw new Error('Error en la respuesta del servidor');
+          // Para otros errores del servidor
+          let errorMessage =
+            'Lo sentimos, ha ocurrido un error al procesar tu mensaje. Por favor, intenta nuevamente más tarde.';
+
+          // Si hay un mensaje de error específico del servidor, usarlo
+          if (errorData.message) {
+            errorMessage = `Error: ${errorData.message}`;
+          }
+
+          signals.onResponse({
+            text: errorMessage,
+            role: 'assistant',
+          });
+          return;
         }
 
         const data = await response.json();
 
-        // Respuesta con la encuesta de satisfacción integrada como HTML
+        // Respuesta normal con la encuesta de satisfacción integrada como HTML
         signals.onResponse({
           text: data.chat_response,
           role: 'assistant',
           html: getSatisfactionHtml(),
         });
       } catch (error) {
+        // Error de conexión u otro error inesperado
         signals.onResponse({
-          error: 'Error de conexión con el servidor. Por favor, intenta más tarde.',
+          text: 'Lo sentimos, ha ocurrido un problema de conexión. Por favor, verifica tu conexión a internet e intenta nuevamente.',
+          role: 'assistant',
         });
       }
     },
@@ -308,7 +328,15 @@ export function Welcome() {
             connect={connect}
             style={{ border: 'none' }}
             introMessage={initialMessages}
-            errorMessages={errorMessages}
+            // Configuración de errores - desactivar mensajes de error nativos
+            errorMessages={{
+              displayServiceErrorMessages: false, // No mostrar errores del servicio
+
+              overrides: {
+                default: '', // Mensaje vacío para no mostrar errores nativos
+                service: '',
+              },
+            }}
             messageStyles={{
               html: {
                 shared: {
