@@ -1,10 +1,22 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { Button, Stack, Text, TextInput } from '@mantine/core';
-import { useInitialForm } from '@/app/hooks';
+import { useAppContext } from '@/app/context';
+import { CostumerInitialInfo, schemaInitialInfo } from '@/app/types';
 
 export function InitialFormConversation() {
-  const { onSubmitInitialData, handleSubmit, register, isSubmitting } = useInitialForm();
+  const { onSubmitInitialData } = useAppContext();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<CostumerInitialInfo>({
+    resolver: zodResolver(schemaInitialInfo),
+  });
+
   return (
     <form onSubmit={handleSubmit(onSubmitInitialData)}>
       <Stack p="md">

@@ -6,8 +6,7 @@ import { DeepChat } from 'deep-chat-react';
 import { IntroMessage } from 'deep-chat/dist/types/messages';
 import { ActionIcon, Button, Group, Paper, Popover, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useGenerateReport, useInitialForm } from '@/app/hooks';
-import { ReportData } from '@/app/types';
+import { useAppContext } from '@/app/context';
 import { GenerateReport, SummaryReport } from '../generate-report';
 import { InitialFormConversation } from '../initial-form-conversation';
 import { MenuOptions } from '../menu-options';
@@ -16,41 +15,21 @@ interface MessageContent {
   text: string;
   role?: string;
 }
+
 export function Welcome() {
   const [opened, { toggle }] = useDisclosure(false);
-  const { setCurrentView, userServerResponse, currentView } = useInitialForm();
-  const { handleReportConfirm, setReportData, reportData } = useGenerateReport();
-
-  // Estado para controlar la vista actual
-
-  const handleMenuSelection = (option: 'chat' | 'report') => {
-    setCurrentView(option);
-  };
-
-  const handleReportUpdate = (data: ReportData['data']) => {
-    setReportData((prev) => ({
-      ...prev,
-      data,
-    }));
-  };
-
-  const handleReportComplete = (data: ReportData['data']) => {
-    setReportData({
-      currentStep: '',
-      data,
-      isComplete: true,
-    });
-    setCurrentView('summary');
-  };
-
-  const handleReportCancel = () => {
-    setReportData({
-      currentStep: '',
-      data: {},
-      isComplete: false,
-    });
-    setCurrentView('menu');
-  };
+  // Usar el contexto global en lugar de los hooks individuales
+  const {
+    userServerResponse,
+    currentView,
+    reportData,
+    setCurrentView,
+    handleReportUpdate,
+    handleReportComplete,
+    handleReportCancel,
+    handleReportConfirm,
+    handleMenuSelection,
+  } = useAppContext();
 
   const getMainMenuHtml = useCallback(
     (first_name: string): string => `
@@ -140,9 +119,7 @@ export function Welcome() {
       case 'login':
         return <InitialFormConversation />;
       case 'menu':
-        return userServerResponse ? (
-          <MenuOptions userInfo={userServerResponse} onSelectOption={handleMenuSelection} />
-        ) : null;
+        return <MenuOptions />;
       case 'report':
         return (
           <GenerateReport

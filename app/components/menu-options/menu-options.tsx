@@ -1,17 +1,18 @@
 import { IconMessageCircle } from '@tabler/icons-react';
 import { Button, Stack, Text } from '@mantine/core';
-import { CostumerInitialInfo } from '@/app/types';
+import { useAppContext } from '@/app/context';
 
-type IntermediateMenuProps = {
-  userInfo: CostumerInitialInfo;
-  onSelectOption: (option: 'chat' | 'report') => void;
-};
+export function MenuOptions() {
+  const { userServerResponse, handleMenuSelection } = useAppContext();
 
-export function MenuOptions({ userInfo, onSelectOption }: IntermediateMenuProps) {
+  if (!userServerResponse) {
+    return null;
+  }
+
   return (
     <Stack p="md">
       <Text size="lg" fw={500} ta="center">
-        ¡Hola {userInfo.first_name}!
+        ¡Hola {userServerResponse.first_name}!
       </Text>
       <Text size="md" ta="center">
         ¿Qué deseas hacer?
@@ -19,14 +20,14 @@ export function MenuOptions({ userInfo, onSelectOption }: IntermediateMenuProps)
 
       <Button
         variant="outline"
-        onClick={() => onSelectOption('chat')}
+        onClick={() => handleMenuSelection('chat')}
         my={5}
         leftSection={<IconMessageCircle size={16} />}
       >
         Hacer una pregunta
       </Button>
 
-      <Button variant="filled" onClick={() => onSelectOption('report')} color="blue">
+      <Button variant="filled" onClick={() => handleMenuSelection('report')} color="blue">
         📝 Crear nuevo reporte
       </Button>
     </Stack>

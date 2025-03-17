@@ -1,189 +1,206 @@
 import { useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { ActionIcon, Box, Button, Card, Group, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Group,
+  Stack,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import { useAppContext } from '@/app/context';
 import type { ReportData } from '@/app/types';
 
-interface ReportFormProps {
-  reportData: ReportData;
-  onUpdateData: (data: ReportData['data']) => void;
-  onComplete: (data: ReportData['data']) => void;
-  onCancel: () => void;
-}
-
+// Definición de pasos simplificada
 const REPORT_STEPS = {
-  INCIDENT_ADDRESS: 'incident_address',
-  ADMINISTRATIVE_AREA: 'administrative_area',
-  NEIGHBORHOOD: 'neighborhood',
-  PERSON_TYPE: 'personType',
-  ID_TYPE: 'idType',
-  ID_NUMBER: 'idNumber',
-  DESCRIPTION: 'description',
-  referred_to: 'referred_to',
+  LOCATION: 'location',
+  DETAILS: 'details',
 } as const;
 
-export function GenerateReport({
-  reportData,
-  onUpdateData,
-  onComplete,
-  onCancel,
-}: ReportFormProps) {
-  const [currentStep, setCurrentStep] = useState<(typeof REPORT_STEPS)[keyof typeof REPORT_STEPS]>(
-    REPORT_STEPS.INCIDENT_ADDRESS
-  );
+export function GenerateReport() {
+  const { reportData, handleReportUpdate, handleReportComplete, handleReportCancel } =
+    useAppContext();
+
+  const [currentStep, setCurrentStep] = useState<keyof typeof REPORT_STEPS>('LOCATION');
   const [formData, setFormData] = useState<ReportData['data']>(reportData.data || {});
-  const [inputValue, setInputValue] = useState<string>('');
 
-  const handleOptionSelect = (value: string) => {
-    const updatedData = { ...formData, [currentStep]: value };
-    setFormData(updatedData);
+  // Estado para los campos de formulario por paso
+  const [locationData, setLocationData] = useState({
+    incident_address: formData.incident_address || '',
+    administrative_area: formData.administrative_area || '',
+    neighborhood: formData.neighborhood || '',
+  });
 
-    const nextStep = getNextStep(currentStep);
-    if (nextStep) {
-      setCurrentStep(nextStep);
-      setInputValue('');
-    } else {
-      // Si no hay siguiente paso, hemos terminado
-      onUpdateData(updatedData);
-      onComplete(updatedData);
+  const [detailsData, setDetailsData] = useState({
+    request_date: formData.request_date || '',
+    description: formData.description || '',
+    referred_to: formData.referred_to || '',
+  });
+
+  // Función para manejar la navegación entre pasos
+  const goToNextStep = () => {
+    if (currentStep === 'LOCATION') {
+      setCurrentStep('DETAILS');
+    } else if (currentStep === 'DETAILS') {
+      // Completar el formulario
+      const updatedData = {
+        ...formData,
+        ...locationData,
+        ...detailsData,
+      };
+
+      handleReportUpdate(updatedData);
+      handleReportComplete(updatedData);
     }
   };
 
-  const handleInputSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim()) {
-      return;
+  const goToPreviousStep = () => {
+    if (currentStep === 'DETAILS') {
+      setCurrentStep('LOCATION');
     }
-
-    handleOptionSelect(inputValue);
   };
 
-  const getNextStep = (
-    step: (typeof REPORT_STEPS)[keyof typeof REPORT_STEPS]
-  ): (typeof REPORT_STEPS)[keyof typeof REPORT_STEPS] => {
-    const steps = [
-      REPORT_STEPS.INCIDENT_ADDRESS,
-      REPORT_STEPS.ADMINISTRATIVE_AREA,
-      REPORT_STEPS.NEIGHBORHOOD,
-      REPORT_STEPS.PERSON_TYPE,
-      REPORT_STEPS.ID_TYPE,
-      REPORT_STEPS.ID_NUMBER,
-      REPORT_STEPS.DESCRIPTION,
-      REPORT_STEPS.referred_to,
-    ];
-
-    const currentIndex = steps.indexOf(step);
-    return steps[currentIndex + 1] || '';
-  };
-
-  interface StepConfig {
-    title: string;
-    text: string;
-    subtitle?: string;
-    type?: 'input';
-    options?: string[];
-  }
-
-  const renderStepContent = () => {
-    const steps: Record<string, StepConfig> = {
-      [REPORT_STEPS.INCIDENT_ADDRESS]: {
-        title: 'Dirección',
-        text: '¿Cuál es la dirección donde se encuentra la persona?',
-        subtitle: 'Por favor, escribe la dirección lo más detallada posible.',
-        type: 'input',
-      },
-      [REPORT_STEPS.ADMINISTRATIVE_AREA]: {
-        title: 'administrative_area',
-        text: 'Comuna:',
-        type: 'input',
-      },
-      [REPORT_STEPS.NEIGHBORHOOD]: {
-        title: 'Barrio',
-        text: '¿En qué barrio se encuentra?',
-        type: 'input',
-      },
-      [REPORT_STEPS.PERSON_TYPE]: {
-        title: 'Tipo de Persona',
-        text: 'Selecciona el tipo de persona:',
-        options: ['Persona Natural', 'Persona Jurídica'],
-      },
-      [REPORT_STEPS.ID_TYPE]: {
-        title: 'Tipo de Identificación',
-        text: 'Tipo de identificación:',
-        options: ['CC', 'NIT', 'CE', 'TI', 'RC'],
-      },
-      [REPORT_STEPS.ID_NUMBER]: {
-        title: 'Número de Identificación',
-        text: 'Número de identificación:',
-        type: 'input',
-      },
-      [REPORT_STEPS.DESCRIPTION]: {
-        title: 'Descripción',
-        text: 'Describe la situación:',
-        subtitle: 'Proporciona todos los detalles relevantes que puedas.',
-        type: 'input',
-      },
-      [REPORT_STEPS.referred_to]: {
-        title: 'Equipo',
-        text: 'Selecciona el equipo al que se remitirá:',
-        options: ['Equipo en calle', 'Equipo de redes', 'Psicosocial', 'Otros'],
-      },
-    };
-
-    const currentStepConfig = steps[currentStep];
-
-    if (!currentStepConfig) {
-      return <Text>Error: Paso no encontrado</Text>;
-    }
-
+  // Validación de campos por paso
+  const isLocationStepValid = () => {
     return (
-      <Card p="lg" radius="md" withBorder style={{ maxWidth: '100%' }}>
-        <Title order={4}>{currentStepConfig.title}</Title>
-        <Text mb={10}>{currentStepConfig.text}</Text>
-
-        {currentStepConfig.subtitle && (
-          <Text size="sm" c="dimmed" mb={15}>
-            {currentStepConfig.subtitle}
-          </Text>
-        )}
-
-        {currentStepConfig.type === 'input' ? (
-          <form onSubmit={handleInputSubmit}>
-            <Group>
-              <TextInput
-                placeholder="Escribe tu respuesta"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <Button type="submit">Siguiente</Button>
-            </Group>
-          </form>
-        ) : (
-          <Stack mt="md">
-            {currentStepConfig.options?.map((option) => (
-              <Button
-                key={option}
-                variant="outline"
-                onClick={() => handleOptionSelect(option)}
-                fullWidth
-              >
-                {option}
-              </Button>
-            ))}
-          </Stack>
-        )}
-      </Card>
+      locationData.incident_address.trim() !== '' &&
+      locationData.administrative_area.trim() !== '' &&
+      locationData.neighborhood.trim() !== ''
     );
   };
 
+  const isDetailsStepValid = () => {
+    return (
+      detailsData.request_date.trim() !== '' &&
+      detailsData.description.trim() !== '' &&
+      detailsData.referred_to.trim() !== ''
+    );
+  };
+
+  // Renderizar el paso actual
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 'LOCATION':
+        return (
+          <Card p="lg" radius="md" withBorder>
+            <Title order={4}>Localización</Title>
+            <Text mb={15}>Por favor, proporciona la información de ubicación</Text>
+
+            <Stack>
+              <TextInput
+                label="Dirección"
+                placeholder="Ingresa la dirección completa"
+                value={locationData.incident_address}
+                onChange={(e) =>
+                  setLocationData({ ...locationData, incident_address: e.target.value })
+                }
+                required
+              />
+
+              <TextInput
+                label="Comuna"
+                placeholder="Ingresa la comuna"
+                value={locationData.administrative_area}
+                onChange={(e) =>
+                  setLocationData({ ...locationData, administrative_area: e.target.value })
+                }
+                required
+              />
+
+              <TextInput
+                label="Barrio"
+                placeholder="Ingresa el barrio"
+                value={locationData.neighborhood}
+                onChange={(e) => setLocationData({ ...locationData, neighborhood: e.target.value })}
+                required
+              />
+
+              <Group mt="md">
+                <Button onClick={goToNextStep} disabled={!isLocationStepValid()}>
+                  Siguiente
+                </Button>
+              </Group>
+            </Stack>
+          </Card>
+        );
+
+      case 'DETAILS':
+        return (
+          <Card p="lg" radius="md" withBorder>
+            <Title order={4}>Detalles del Caso</Title>
+            <Text mb={15}>Proporciona detalles adicionales sobre el caso</Text>
+
+            <Stack>
+              <TextInput
+                type="date"
+                label="Fecha del Incidente"
+                placeholder="Selecciona la fecha"
+                value={detailsData.request_date || ''}
+                onChange={(e) =>
+                  setDetailsData({
+                    ...detailsData,
+                    request_date: e.target.value,
+                  })
+                }
+                required
+              />
+
+              <Textarea
+                label="Descripción"
+                placeholder="Describe la situación detalladamente"
+                minRows={3}
+                value={detailsData.description}
+                onChange={(e) => setDetailsData({ ...detailsData, description: e.target.value })}
+                required
+              />
+
+              <Text fw={500} size="sm" mt={15} mb={5}>
+                Equipo *
+              </Text>
+              <Chip.Group
+                value={detailsData.referred_to}
+                onChange={(value) =>
+                  setDetailsData({ ...detailsData, referred_to: value as string })
+                }
+              >
+                <Group gap="md">
+                  <Chip value="POLICE">POLICE</Chip>
+                  <Chip value="SOCIAL_SERVICES">SOCIAL_SERVICES</Chip>
+                  <Chip value="HEALTHCARE">HEALTHCARE</Chip>
+                  <Chip value="OTHER">OTHER</Chip>
+                </Group>
+              </Chip.Group>
+
+              <Group justify="space-between" mt="md">
+                <Button variant="outline" onClick={goToPreviousStep}>
+                  Anterior
+                </Button>
+                <Button onClick={goToNextStep} disabled={!isDetailsStepValid()}>
+                  Finalizar
+                </Button>
+              </Group>
+            </Stack>
+          </Card>
+        );
+
+      default:
+        return <Text>Error: Paso no encontrado</Text>;
+    }
+  };
+
   const renderProgressIndicator = () => {
-    const steps = Object.values(REPORT_STEPS);
+    const steps = Object.keys(REPORT_STEPS);
     const currentIndex = steps.indexOf(currentStep);
     const totalSteps = steps.length;
 
     return (
       <Group mb="md">
-        <ActionIcon onClick={onCancel}>
+        <ActionIcon onClick={handleReportCancel}>
           <IconArrowLeft size={16} />
         </ActionIcon>
         <Text size="sm">
