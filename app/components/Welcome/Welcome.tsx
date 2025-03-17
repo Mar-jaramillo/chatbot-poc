@@ -74,14 +74,8 @@ export function Welcome() {
           signals.onResponse({ error: 'Mensaje no válido' });
           return;
         }
-
         // Obtener el ID del usuario de la respuesta del servidor
         const userId = userServerResponse?.id || userServerResponse?._id;
-
-        // Objeto de usuario con ID del servidor
-        const userWithId = userId
-          ? { ...userServerResponse, id: userId } // Añadir el ID si existe
-          : userServerResponse; // Usar solo userInfo si no hay ID
 
         // Conexión normal a la API
         const response = await fetch('http://localhost:8000/api/v1/chats/conversations/ask/', {
@@ -91,8 +85,8 @@ export function Welcome() {
             Accept: 'application/json',
           },
           body: JSON.stringify({
-            query: lastMessage,
-            user: userWithId, // Enviar el usuario con ID
+            customer_query: lastMessage,
+            customer_id: userId, // Enviar el usuario con ID
           }),
         });
 
@@ -103,7 +97,7 @@ export function Welcome() {
         const data = await response.json();
 
         signals.onResponse({
-          text: data.response,
+          text: data.chat_response,
           html: userServerResponse ? getMainMenuHtml(userServerResponse.first_name) : '',
           role: 'assistant',
         });
@@ -151,7 +145,43 @@ export function Welcome() {
       case 'chat':
         return (
           <DeepChat
-          // ... configuración existente
+            connect={connect}
+            style={{ border: 'none' }}
+            introMessage={initialMessages}
+            messageStyles={{
+              html: {
+                shared: {
+                  bubble: {
+                    backgroundColor: 'unset',
+                    padding: '0px',
+                  },
+                },
+              },
+            }}
+            textInput={{
+              placeholder: { text: 'Envía un mensaje' },
+              styles: {
+                container: {
+                  boxShadow: 'none',
+                  borderRadius: '1em',
+                  border: '1px solid rgba(0,0,0,0.2)',
+                },
+                text: {
+                  padding: '0.4em 0.8em',
+                  paddingRight: '2.5em',
+                },
+              },
+            }}
+            submitButtonStyles={{
+              submit: {
+                container: {
+                  default: {
+                    paddingRight: '0.3em',
+                    backgroundColor: '#00c82a',
+                  },
+                },
+              },
+            }}
           />
         );
       default:
