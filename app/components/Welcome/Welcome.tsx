@@ -1,11 +1,21 @@
 'use client';
 
-import { useCallback } from 'react';
-import { IconArrowLeft, IconMessageChatbot } from '@tabler/icons-react';
+import { useCallback, useEffect, useRef } from 'react';
+import { IconArrowLeft, IconCheck, IconMessageChatbot } from '@tabler/icons-react';
 import { DeepChat } from 'deep-chat-react';
 import { IntroMessage } from 'deep-chat/dist/types/messages';
-import { ActionIcon, Button, Group, Paper, Popover, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  BlockquoteStylesNames,
+  Button,
+  Group,
+  Paper,
+  Popover,
+  Text,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { API_BASE_URL } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { GenerateReport, SummaryReport } from '../generate-report';
 import { InitialFormConversation } from '../initial-form-conversation';
@@ -15,11 +25,13 @@ import { SatisfactionSurvey } from '../satisfactory-survey';
 interface MessageContent {
   text: string;
   role?: string;
+  html?: string;
 }
 
 export function Welcome() {
   const [opened, { toggle }] = useDisclosure(false);
-  // Usar el contexto global en lugar de los hooks individuales
+  const deepChatRef = useRef(null);
+
   const {
     userServerResponse,
     currentView,
@@ -33,6 +45,65 @@ export function Welcome() {
     handleSurveyComplete,
     handleSurveyError,
   } = useAppContext();
+
+  const submitFeedback = async (isSatisfactory: boolean) => {
+    if (!userServerResponse?.id) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/chats/conversations/satisfaction/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_id: userServerResponse.id,
+          is_satisfactory: isSatisfactory,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al enviar la encuesta de satisfacción');
+      }
+
+      notifications.show({
+        id: 'feedback-success',
+        title: '¡Gracias por tu feedback!',
+        message: 'Tu opinión nos ayuda a mejorar',
+        color: 'blue',
+        icon: <IconCheck size={16} />,
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error('Error al enviar feedback:', error);
+    }
+  };
+
+  // HTML para los botones de satisfacción
+  const getSatisfactionHtml = () => `
+    <div class="deep-chat-temporary-message" style="display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: center; margin-top: 8px;">
+      <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center; color: #495057; font-size: 14px;">
+        ¿Te fue útil esta respuesta?
+      </div>
+      <div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px;">
+        <button
+          class="deep-chat-button deep-chat-suggestion-button"
+          onclick="window.postMessage({type: 'satisfactionFeedback', value: true}, '*')"
+          style="padding: 8px 20px; border: 1px solid #12B886; border-radius: 4px; background-color: white; color: #12B886; font-weight: 500;"
+        >
+          Sí
+        </button>
+        <button
+          class="deep-chat-button deep-chat-suggestion-button"
+          onclick="window.postMessage({type: 'satisfactionFeedback', value: false}, '*')"
+          style="padding: 8px 20px; border: 1px solid #FA5252; border-radius: 4px; background-color: white; color: #FA5252; font-weight: 500;"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  `;
 
   const getMainMenuHtml = useCallback(
     (first_name: string): string => `
@@ -58,6 +129,20 @@ export function Welcome() {
   `,
     []
   );
+  // Escuchar mensajes de la ventana para los botones de satisfacción
+  useEffect(() => {
+    const handleCustomEvent = (event) => {
+      if (event.data.type === 'satisfactionFeedback') {
+        // Procesar la retroalimentación de satisfacción
+        submitFeedback(event.data.value);
+      }
+    };
+
+    window.addEventListener('message', handleCustomEvent);
+    return () => {
+      window.removeEventListener('message', handleCustomEvent);
+    };
+  }, [userServerResponse]);
 
   const initialMessages: IntroMessage[] = [
     {
@@ -75,7 +160,7 @@ export function Welcome() {
           return;
         }
         // Obtener el ID del usuario de la respuesta del servidor
-        const userId = userServerResponse?.id || userServerResponse?._id;
+        const userId = userServerResponse?.id;
 
         // Conexión normal a la API
         const response = await fetch('http://localhost:8000/api/v1/chats/conversations/ask/', {
@@ -96,13 +181,13 @@ export function Welcome() {
 
         const data = await response.json();
 
+        // Respuesta con la encuesta de satisfacción integrada
         signals.onResponse({
           text: data.chat_response,
-          html: userServerResponse ? getMainMenuHtml(userServerResponse.first_name) : '',
           role: 'assistant',
+          html: getSatisfactionHtml(),
         });
       } catch (error) {
-        console.error('Error en el handler:', error);
         signals.onResponse({
           error: 'Error de conexión con el servidor. Por favor, intenta más tarde.',
         });
@@ -122,7 +207,7 @@ export function Welcome() {
           <GenerateReport
             reportData={reportData}
             onUpdateData={handleReportUpdate}
-            onComplete={handleReportComplete}
+            ref={deepChatRef}
             onCancel={handleReportCancel}
           />
         );
