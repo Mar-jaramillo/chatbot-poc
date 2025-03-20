@@ -41,6 +41,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     isComplete: false,
   });
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  
   const [confirmModalOpened, { open: openConfirmModal, close: closeConfirmModal }] =
     useDisclosure(false);
   const [confirmModalConfig, setConfirmModalConfig] = useState({

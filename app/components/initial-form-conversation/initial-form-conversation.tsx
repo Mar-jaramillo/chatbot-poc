@@ -22,7 +22,7 @@ export function InitialFormConversation() {
       <Stack p="md">
         <Stack>
           <Text size="md" fw={500} ta="center">
-            Antes de comenzar, por favor completa tus datos
+            ¡Hola! Soy Abby, tu asistente virtual, antes de comenzar por favor completa tus datos
           </Text>
         </Stack>
 
@@ -47,9 +47,9 @@ export function InitialFormConversation() {
           required
         />
         <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
-          Tu privacidad es muy importante para nosotros. <br />
-          Al continuar, aceptas que tus datos se utilicen únicamente con fines de registro y
-          seguimiento del programa. No compartiremos tu información con terceros.
+          Tu información será tratada de forma segura y solo se usará para brindarte el servicio
+          solicitado. Al continuar, aceptas nuestro tratamiento de datos conforme a nuestras
+          políticas.
         </Text>
         <Stack>
           <Button type="submit" loading={isSubmitting} fullWidth>

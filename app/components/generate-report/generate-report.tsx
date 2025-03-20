@@ -28,6 +28,7 @@ export function GenerateReport() {
 
   const [currentStep, setCurrentStep] = useState<keyof typeof REPORT_STEPS>('LOCATION');
   const [formData, setFormData] = useState<ReportData['data']>(reportData.data || {});
+  
 
   // Efecto para actualizar formData si cambia reportData
   useEffect(() => {

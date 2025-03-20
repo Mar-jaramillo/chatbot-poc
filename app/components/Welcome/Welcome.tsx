@@ -1,12 +1,24 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
-import { IconArrowLeft, IconCheck, IconMessageChatbot } from '@tabler/icons-react';
+import { useCallback, useRef } from 'react';
+import { IconArrowLeft, IconMessageChatbot } from '@tabler/icons-react';
 import { DeepChat } from 'deep-chat-react';
 import { IntroMessage } from 'deep-chat/dist/types/messages';
-import { ActionIcon, Button, Group, Paper, Popover, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Anchor,
+  Avatar,
+  Box,
+  Button,
+  Group,
+  Indicator,
+  Paper,
+  Popover,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { GenerateReport, SummaryReport } from '../generate-report';
@@ -34,75 +46,9 @@ export function Welcome() {
     handleReportComplete,
     handleReportCancel,
     handleReportConfirm,
-    handleMenuSelection,
     handleSurveyComplete,
     handleSurveyError,
   } = useAppContext();
-
-  const submitFeedback = async (isSatisfactory: boolean) => {
-    if (!userServerResponse?.id) {
-      return;
-    }
-
-    isProcessingSatisfaction.current = true;
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/chats/conversations/satisfaction/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customer_id: userServerResponse.id,
-          is_satisfactory: isSatisfactory,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al enviar la encuesta de satisfacción');
-      }
-
-      notifications.show({
-        id: 'feedback-success',
-        title: '¡Gracias por tu feedback!',
-        message: 'Tu opinión nos ayuda a mejorar',
-        color: 'blue',
-        icon: <IconCheck size={16} />,
-        autoClose: 3000,
-      });
-    } catch (error) {
-      console.error('Error al enviar feedback:', error);
-    } finally {
-      setTimeout(() => {
-        isProcessingSatisfaction.current = false;
-      }, 500);
-    }
-  };
-
-  // HTML para los botones de satisfacción - usamos identificadores únicos
-  const getSatisfactionHtml = () => `
-    <div class="deep-chat-temporary-message" style="display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: center; margin-top: 8px;">
-      <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center; color: #495057; font-size: 14px;">
-        ¿Te fue útil esta respuesta?
-      </div>
-      <div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px;">
-        <button
-          class="satisfaction-button satisfaction-yes"
-          onclick="window.postMessage({type: 'satisfactionFeedback', value: true}, '*')"
-          style="padding: 8px 20px; border: 1px solid #12B886; border-radius: 4px; background-color: white; color: #12B886; font-weight: 500;"
-        >
-          Sí
-        </button>
-        <button
-          class="satisfaction-button satisfaction-no"
-          onclick="window.postMessage({type: 'satisfactionFeedback', value: false}, '*')"
-          style="padding: 8px 20px; border: 1px solid #FA5252; border-radius: 4px; background-color: white; color: #FA5252; font-weight: 500;"
-        >
-          No
-        </button>
-      </div>
-    </div>
-  `;
 
   const getMainMenuHtml = useCallback(
     (first_name: string): string => `
@@ -128,58 +74,6 @@ export function Welcome() {
   `,
     []
   );
-
-  // Escuchar mensajes de la ventana para los botones de satisfacción
-  useEffect(() => {
-    // Función para prevenir que los botones de satisfacción envíen mensajes
-    const preventSatisfactionSubmit = (e: MouseEvent) => {
-      // Verificar si el clic fue en un botón de satisfacción
-      const target = e.target as HTMLElement;
-      if (target.classList.contains('satisfaction-button')) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Determinar qué tipo de botón de satisfacción se hizo clic
-        const isSatisfied = target.classList.contains('satisfaction-yes');
-
-        // Enviar feedback
-        submitFeedback(isSatisfied);
-
-        // Actualizar la UI para dar retroalimentación visual
-        const satisfactionContainer = target.closest('.deep-chat-temporary-message');
-        if (satisfactionContainer) {
-          satisfactionContainer.innerHTML = `
-            <div style="background-color: #e9fef6; padding: 12px; border-radius: 8px; text-align: center; color: #12B886; font-size: 14px;">
-              ¡Gracias por tu feedback!
-            </div>
-          `;
-        }
-
-        return false;
-      }
-    };
-
-    // Agregar handler para clics en el documento
-    document.addEventListener('click', preventSatisfactionSubmit as unknown as EventListener, true);
-
-    // Handler para mensajes de window.postMessage
-    const handleCustomEvent = (event: MessageEvent) => {
-      if (event.data.type === 'satisfactionFeedback') {
-        submitFeedback(event.data.value);
-      }
-    };
-
-    window.addEventListener('message', handleCustomEvent);
-
-    return () => {
-      document.removeEventListener(
-        'click',
-        preventSatisfactionSubmit as unknown as EventListener,
-        true
-      );
-      window.removeEventListener('message', handleCustomEvent);
-    };
-  }, [userServerResponse]);
 
   const initialMessages: IntroMessage[] = [
     {
@@ -240,7 +134,7 @@ export function Welcome() {
           ) {
             // Enviar un mensaje amigable al chat sobre el límite alcanzado
             signals.onResponse({
-              text: 'Has alcanzado el límite de preguntas para esta conversación. Si necesitas seguir conversando, por favor vuelve al menú principal.',
+              text: 'Has alcanzado el límite de preguntas para esta conversación. Por favor vuelve al menú principal si deseas hacer un reporte.',
               role: 'assistant',
             });
             return;
@@ -268,7 +162,6 @@ export function Welcome() {
         signals.onResponse({
           text: data.chat_response,
           role: 'assistant',
-          html: getSatisfactionHtml(),
         });
       } catch (error) {
         // Error de conexión u otro error inesperado
@@ -277,15 +170,6 @@ export function Welcome() {
           role: 'assistant',
         });
       }
-    },
-  };
-
-  // Configuración simple de errorMessages según la documentación
-  const errorMessages = {
-    displayServiceErrorMessages: false,
-    overrides: {
-      default: 'Lo sentimos, ha ocurrido un error. Por favor, inténtalo de nuevo.',
-      service: 'Has alcanzado el límite de preguntas para esta conversación.',
     },
   };
 
@@ -328,12 +212,10 @@ export function Welcome() {
             connect={connect}
             style={{ border: 'none' }}
             introMessage={initialMessages}
-            // Configuración de errores - desactivar mensajes de error nativos
             errorMessages={{
-              displayServiceErrorMessages: false, // No mostrar errores del servicio
-
+              displayServiceErrorMessages: false,
               overrides: {
-                default: '', // Mensaje vacío para no mostrar errores nativos
+                default: '',
                 service: '',
               },
             }}
@@ -400,25 +282,45 @@ export function Welcome() {
     <>
       <Popover opened={opened} onChange={toggle} position="top-end" offset={20} withArrow>
         <Popover.Target>
-          <ActionIcon
-            variant="filled"
-            color="blue"
-            size="4rem"
-            radius="xl"
-            aria-label="Abrir chat"
-            onClick={toggle}
+          <Box
             style={{
               position: 'fixed',
               bottom: '2rem',
-              right: '2rem',
+              right: '3rem',
               zIndex: 1000,
             }}
           >
-            <IconMessageChatbot size={40} stroke={1.5} />
-          </ActionIcon>
+            <Tooltip label="¿Necesitas ayuda?" opened position="left" color="blue">
+              <Avatar
+                variant="transparent"
+                size="xl"
+                component="button"
+                onClick={toggle}
+                src="/images/abbi-avatar.png"
+                alt="it's me"
+              />
+            </Tooltip>
+          </Box>
         </Popover.Target>
 
         <Popover.Dropdown>
+          <Group>
+            <Avatar src="/images/abbi-avatar.png" size="lg" radius="xl" />
+            <Stack gap={5}>
+              <Text size="lg" fw={700} style={{ lineHeight: 1 }}>
+                Abby
+              </Text>
+
+              <Anchor
+                href="https://x.com/mantinedev"
+                c="dimmed"
+                size="xs"
+                style={{ lineHeight: 1 }}
+              >
+                Online chatbot
+              </Anchor>
+            </Stack>
+          </Group>
           <Paper style={{ width: '350px' }}>
             <BackToMenuButton />
             {renderContent()}
