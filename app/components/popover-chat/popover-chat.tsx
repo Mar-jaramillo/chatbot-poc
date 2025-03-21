@@ -1,4 +1,4 @@
-import { Paper, Popover, ScrollArea } from '@mantine/core';
+import { Box, Paper, Popover, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAppContext } from '@/app/context';
 import { useViewsContent } from '@/app/hooks';
@@ -21,9 +21,18 @@ export function PopoverChat() {
       withArrow
       middlewares={{ flip: true, shift: true, inline: true }}
     >
-
       <Popover.Target>
-        <ChatAvatarButton toggle={toggle} />
+        <Box
+          style={{
+            position: 'fixed',
+            bottom: '1rem',
+            right: '1rem',
+            zIndex: 1000,
+            display: 'inline-block',
+          }}
+        >
+          <ChatAvatarButton toggle={toggle} />
+        </Box>
       </Popover.Target>
 
       <Popover.Dropdown

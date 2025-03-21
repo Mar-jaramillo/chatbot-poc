@@ -25,7 +25,15 @@ export function ConfirmationModal({
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title={title} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={title}
+      centered
+      style={{
+        zIndex: 1100,
+      }}
+    >
       <Stack>
         <Text>{message}</Text>
         <Group justify="flex-end">
