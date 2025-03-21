@@ -1,5 +1,3 @@
-'use client';
-
 import { Paper, Popover, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAppContext } from '@/app/context';
@@ -18,11 +16,12 @@ export function PopoverChat() {
     <Popover
       opened={opened}
       onChange={toggle}
-      position="bottom-end"
-      offset={2}
+      position="top-end"
+      offset={1}
       withArrow
       middlewares={{ flip: true, shift: true, inline: true }}
     >
+
       <Popover.Target>
         <ChatAvatarButton toggle={toggle} />
       </Popover.Target>

@@ -1,8 +1,6 @@
-'use client';
-
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconId, IconMailbox, IconUser } from '@tabler/icons-react';
+import {  IconMailbox, IconUser } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
 import { Anchor, Box, Button, Checkbox, Paper, Stack, Tabs, Text, TextInput } from '@mantine/core';
 import { useAppContext } from '@/app/context';
@@ -17,9 +15,8 @@ export function InitialFormConversation() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting, errors },
     trigger,
-    watch,
   } = useForm<CostumerInitialInfo>({
     resolver: zodResolver(schemaInitialInfo),
     mode: 'onChange',
