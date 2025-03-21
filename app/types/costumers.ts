@@ -1,6 +1,16 @@
 import { z } from 'zod';
 
-export type ViewType = 'initial' | 'login' | 'menu' | 'chat' | 'report' | 'summary' | 'survey';
+export enum ViewEnum {
+  INITIAL = 'initial',
+  LOGIN = 'login',
+  MENU = 'menu',
+  CHAT = 'chat',
+  REPORT = 'report',
+  SUMMARY = 'summary',
+  SURVEY = 'survey',
+}
+
+export type ViewType = ViewEnum;
 
 export type CostumerInitialInfo = {
   id?: string;

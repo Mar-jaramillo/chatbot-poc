@@ -1,4 +1,3 @@
-import React from 'react';
 import { Paper, Stack } from '@mantine/core';
 import { MENU_OPTIONS } from '@/app/consts';
 import { useAppContext } from '@/app/context';

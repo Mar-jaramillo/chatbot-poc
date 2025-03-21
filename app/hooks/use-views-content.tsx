@@ -7,10 +7,12 @@ import { GenerateReport, SummaryReport } from '../components/generate-report';
 import { InitialFormConversation } from '../components/initial-form-conversation';
 import { MenuOptions } from '../components/menu-options';
 import { SatisfactionSurvey } from '../components/satisfactory-survey';
+import { ViewEnum } from '../types';
 
 export function useViewsContent() {
   const deepChatRef = useRef(null);
   const { connect, initialMessages } = useDeepChatConnect();
+
   const {
     userServerResponse,
     currentView,
@@ -25,11 +27,11 @@ export function useViewsContent() {
 
   const renderContent = () => {
     switch (currentView) {
-      case 'login':
+      case ViewEnum.LOGIN:
         return <InitialFormConversation />;
-      case 'menu':
+      case ViewEnum.MENU:
         return <MenuOptions />;
-      case 'report':
+      case ViewEnum.REPORT:
         return (
           <GenerateReport
             reportData={reportData}
@@ -38,7 +40,7 @@ export function useViewsContent() {
             onCancel={handleReportCancel}
           />
         );
-      case 'summary':
+      case ViewEnum.SUMMARY:
         return (
           <SummaryReport
             data={reportData.data}
@@ -46,7 +48,7 @@ export function useViewsContent() {
             onCancel={handleReportCancel}
           />
         );
-      case 'survey':
+      case ViewEnum.SURVEY:
         return (
           <SatisfactionSurvey
             customerId={userServerResponse?.id || ''}
@@ -54,7 +56,7 @@ export function useViewsContent() {
             onError={handleSurveyError}
           />
         );
-      case 'chat':
+      case ViewEnum.CHAT:
         return (
           <DeepChat
             ref={deepChatRef}

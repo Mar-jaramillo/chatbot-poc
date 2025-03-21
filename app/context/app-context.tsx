@@ -5,7 +5,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
-import { CostumerInitialInfo, ReportData, ViewType } from '@/app/types';
+import { CostumerInitialInfo, ReportData, ViewEnum, ViewType } from '@/app/types';
 import { ConfirmationModal } from '../components/ui';
 
 interface AppContextProps {
@@ -20,7 +20,7 @@ interface AppContextProps {
   handleReportUpdate: (data: ReportData['data']) => void;
   handleReportComplete: (data: ReportData['data']) => void;
   handleReportCancel: () => void;
-  handleMenuSelection: (option: 'chat' | 'report') => void;
+  handleMenuSelection: (option: ViewEnum.CHAT | ViewEnum.REPORT) => void;
   handleSurveyComplete: () => void;
   handleSurveyError: (error: Error) => void;
   confirmModalProps: {
@@ -34,14 +34,14 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [userServerResponse, setUserServerResponse] = useState<CostumerInitialInfo | null>(null);
-  const [currentView, setCurrentView] = useState<ViewType>('login');
+  const [currentView, setCurrentView] = useState<ViewType>(ViewEnum.LOGIN);
   const [reportData, setReportData] = useState<ReportData>({
     currentStep: '',
     data: {},
     isComplete: false,
   });
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
-  
+
   const [confirmModalOpened, { open: openConfirmModal, close: closeConfirmModal }] =
     useDisclosure(false);
   const [confirmModalConfig, setConfirmModalConfig] = useState({
@@ -82,7 +82,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         const responseData = await response.json();
         setUserServerResponse(responseData);
-        setCurrentView('menu');
+        setCurrentView(ViewEnum.MENU);
 
         notifications.show({
           id: 'login-success',
@@ -96,7 +96,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         throw new Error('Error al crear los Datos iniciales');
       }
     } catch (error) {
-      setCurrentView('login');
+      setCurrentView(ViewEnum.LOGIN);
       notifications.show({
         id: 'login-error',
         title: 'Error',
@@ -131,7 +131,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           icon: <IconCheck size={16} />,
           autoClose: 3000,
         });
-        setCurrentView('survey');
+        setCurrentView(ViewEnum.SURVEY);
       } else {
         throw new Error('Error al crear el reporte');
       }
@@ -160,7 +160,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       data,
       isComplete: true,
     });
-    setCurrentView('summary');
+    setCurrentView(ViewEnum.SUMMARY);
   };
 
   const handleReportCancel = () => {
@@ -172,7 +172,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             data: {},
             isComplete: false,
           });
-          setCurrentView('menu');
+          setCurrentView(ViewEnum.MENU);
         },
         {
           title: 'Cancelar reporte',
@@ -187,7 +187,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         data: {},
         isComplete: false,
       });
-      setCurrentView('menu');
+      setCurrentView(ViewEnum.MENU);
     }
   };
 
@@ -205,7 +205,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       data: {},
       isComplete: false,
     });
-    setCurrentView('menu');
+    setCurrentView(ViewEnum.MENU);
   };
 
   const handleSurveyError = () => {
@@ -224,11 +224,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       data: {},
       isComplete: false,
     });
-    setCurrentView('menu');
+    setCurrentView(ViewEnum.MENU);
   };
 
-  const handleMenuSelection = (option: 'chat' | 'report') => {
-    if (option === 'report') {
+  const handleMenuSelection = (option: ViewEnum.CHAT | ViewEnum.REPORT) => {
+    if (option === ViewEnum.REPORT) {
       setReportData({
         currentStep: '',
         data: {},

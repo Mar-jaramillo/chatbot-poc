@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { API_BASE_URL } from '../consts';
-import { ReportData } from '../types';
+import { ReportData, ViewEnum } from '../types';
 import { useInitialForm } from './use-initial-form';
 
 export function useGenerateReport() {
@@ -35,7 +35,7 @@ export function useGenerateReport() {
           data: {},
           isComplete: false,
         });
-        setCurrentView('menu');
+        setCurrentView(ViewEnum.MENU);
       } else {
         throw new Error('Error al crear el reporte');
       }

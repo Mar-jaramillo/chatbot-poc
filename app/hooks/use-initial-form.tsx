@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { API_BASE_URL } from '../consts';
-import { schemaInitialInfo, ViewType, type CostumerInitialInfo } from '../types';
+import { schemaInitialInfo, ViewEnum, ViewType, type CostumerInitialInfo } from '../types';
 
 export function useInitialForm() {
   const {
@@ -31,14 +31,14 @@ export function useInitialForm() {
       if (response.ok) {
         const responseData = await response.json();
         setUserServerResponse(responseData);
-        setCurrentView('menu');
+        setCurrentView(ViewEnum.MENU);
       } else {
         throw new Error('Error al crear los Datos iniciales');
       }
     } catch (error) {
       // Handle the error appropriately here
       setUserServerResponse(null);
-      setCurrentView('login');
+      setCurrentView(ViewEnum.LOGIN);
     }
   };
   return {
