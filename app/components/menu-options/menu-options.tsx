@@ -1,5 +1,5 @@
 import { IconMessageCircle } from '@tabler/icons-react';
-import { Button, Stack, Text } from '@mantine/core';
+import { Button, Paper, Stack, Text } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 
 export function MenuOptions() {
@@ -10,26 +10,38 @@ export function MenuOptions() {
   }
 
   return (
-    <Stack p="md">
-      <Text size="lg" fw={500} ta="center">
-        ¡Hola {userServerResponse.first_name}!
-      </Text>
-      <Text size="md" ta="center">
-        ¿Qué deseas hacer?
-      </Text>
+    <Paper shadow="sm" radius="md">
+      <Stack p="md">
+        <Text size="lg" c="blue" fw={700}>
+          {userServerResponse.first_name}
+        </Text>
+        <Text size="lg" fw={700}>
+          ¿Cómo puedo ayudarte?
+        </Text>
+        <Text size="sm" ta="center">
+          Para empezar elige una de las siguientes opciones:
+        </Text>
 
-      <Button
-        variant="outline"
-        onClick={() => handleMenuSelection('chat')}
-        my={5}
-        leftSection={<IconMessageCircle size={16} />}
-      >
-        Hacer una pregunta
-      </Button>
+        <Button size="xs" variant="outline" onClick={() => handleMenuSelection('chat')} my={5}>
+          Hacer una pregunta
+        </Button>
 
-      <Button variant="filled" onClick={() => handleMenuSelection('report')} color="blue">
-        📝 Crear nuevo reporte
-      </Button>
-    </Stack>
+        <Button
+          variant="filled"
+          size="xs"
+          onClick={() => handleMenuSelection('report')}
+          color="blue"
+        >
+          Crear nuevo reporte
+        </Button>
+        <Button size="xs" variant="outline" onClick={() => handleMenuSelection('chat')} my={5}>
+          Hacer seguimiento
+        </Button>
+
+        <Button size="xs" variant="outline" onClick={() => handleMenuSelection('chat')} my={5}>
+          Califica tu experiencia
+        </Button>
+      </Stack>
+    </Paper>
   );
 }

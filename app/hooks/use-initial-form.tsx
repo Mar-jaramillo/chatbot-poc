@@ -36,7 +36,8 @@ export function useInitialForm() {
         throw new Error('Error al crear los Datos iniciales');
       }
     } catch (error) {
-      console.error('Error al enviar los Datos iniciales:', error);
+      // Handle the error appropriately here
+      setUserServerResponse(null);
       setCurrentView('login');
     }
   };

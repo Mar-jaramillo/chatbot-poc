@@ -9,38 +9,32 @@ type SummaryReportProps = ReportData & {
 export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps) {
   return (
     <Card p="lg" radius="md" withBorder>
-      <Title order={4}>Resumen del reporte</Title>
+      <Title order={5}>Resumen del reporte</Title>
+      <Text size="xs">
+        Aquí tienes el resumen de tu reporte. Verifica que toda la información esté correcta.
+      </Text>
       <Box my="md">
-        <Text>
+        <Text size="sm">
           <strong>Dirección:</strong> {data.incident_address || '-'}
         </Text>
-        <Text>
-          <strong>administrative_area:</strong> {data.administrative_area || '-'}
+        <Text size="sm">
+          <strong>Comuna:</strong> {data.administrative_area || '-'}
         </Text>
-        <Text>
+        <Text size="sm">
           <strong>Barrio:</strong> {data.neighborhood || '-'}
         </Text>
-        <Text>
-          <strong>Tipo de persona:</strong> {data.personType || '-'}
-        </Text>
-        <Text>
-          <strong>Tipo de ID:</strong> {data.idType || '-'}
-        </Text>
-        <Text>
-          <strong>Número de ID:</strong> {data.idNumber || '-'}
-        </Text>
-        <Text>
+        <Text size="sm">
           <strong>Descripción:</strong> {data.description || '-'}
         </Text>
-        <Text>
+        <Text size="sm">
           <strong>Equipo:</strong> {data.referred_to || '-'}
         </Text>
       </Box>
       <Group>
-        <Button variant="outline" color="red" onClick={onCancel}>
+        <Button size="xs" variant="outline" color="red" onClick={onCancel}>
           Cancelar
         </Button>
-        <Button color="green" onClick={onConfirm}>
+        <Button color="green" size="xs" onClick={onConfirm}>
           Confirmar y enviar
         </Button>
       </Group>

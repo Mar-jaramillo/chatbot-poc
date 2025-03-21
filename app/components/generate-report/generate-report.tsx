@@ -28,7 +28,6 @@ export function GenerateReport() {
 
   const [currentStep, setCurrentStep] = useState<keyof typeof REPORT_STEPS>('LOCATION');
   const [formData, setFormData] = useState<ReportData['data']>(reportData.data || {});
-  
 
   // Efecto para actualizar formData si cambia reportData
   useEffect(() => {
@@ -85,8 +84,11 @@ export function GenerateReport() {
       case 'LOCATION':
         return (
           <Card p="lg" radius="md" withBorder>
-            <Title order={4}>Localización</Title>
-            <Text mb={15}>Por favor, proporciona la información de ubicación</Text>
+            <Title order={5}>Localización</Title>
+            <Text mb={15} size="xs">
+              Nos gustaría saber la ubicación del caso para poder gestionar tu reporte de manera más
+              efectiva.
+            </Text>
 
             <Stack>
               <TextInput
@@ -114,7 +116,7 @@ export function GenerateReport() {
               />
 
               <Group mt="md">
-                <Button onClick={goToNextStep} disabled={!isLocationStepValid()}>
+                <Button size="xs" onClick={goToNextStep} disabled={!isLocationStepValid()}>
                   Siguiente
                 </Button>
               </Group>
@@ -125,8 +127,10 @@ export function GenerateReport() {
       case 'DETAILS':
         return (
           <Card p="lg" radius="md" withBorder>
-            <Title order={4}>Detalles del Caso</Title>
-            <Text mb={15}>Proporciona detalles adicionales sobre el caso</Text>
+            <Title order={5}>Detalles del Caso</Title>
+            <Text mb={15} size="xs">
+              Proporciona detalles adicionales sobre el caso
+            </Text>
 
             <Stack>
               <TextInput
@@ -163,10 +167,10 @@ export function GenerateReport() {
               </Chip.Group>
 
               <Group justify="space-between" mt="md">
-                <Button variant="outline" onClick={goToPreviousStep}>
+                <Button size="xs" variant="outline" onClick={goToPreviousStep}>
                   Anterior
                 </Button>
-                <Button onClick={goToNextStep} disabled={!isDetailsStepValid()}>
+                <Button size="xs" onClick={goToNextStep} disabled={!isDetailsStepValid()}>
                   Finalizar
                 </Button>
               </Group>

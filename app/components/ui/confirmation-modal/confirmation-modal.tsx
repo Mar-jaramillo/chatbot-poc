@@ -29,10 +29,10 @@ export function ConfirmationModal({
       <Stack>
         <Text>{message}</Text>
         <Group justify="flex-end">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" size="xs" onClick={onClose}>
             {cancelLabel}
           </Button>
-          <Button color="red" onClick={handleConfirm}>
+          <Button color="red" size="xs" onClick={handleConfirm}>
             {confirmLabel}
           </Button>
         </Group>
