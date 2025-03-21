@@ -47,7 +47,7 @@ export function InitialFormConversation() {
             required
           />
           <TextInput
-            label="Primer Apellido"
+            label="Primer apellido"
             placeholder="Escribe tu apellido"
             {...register('last_name')}
             required

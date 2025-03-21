@@ -1,4 +1,4 @@
-import { Box, Button, Card, Group, Text, Title } from '@mantine/core';
+import { Box, Button, Card, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { ReportData } from '@/app/types';
 
 type SummaryReportProps = ReportData & {
@@ -6,38 +6,56 @@ type SummaryReportProps = ReportData & {
   onCancel: () => void;
 };
 
+type ReportField = {
+  label: string;
+  key: keyof ReportData['data'];
+};
 export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps) {
+  const reportFields: ReportField[] = [
+    { label: 'Dirección', key: 'incident_address' },
+    { label: 'Comuna', key: 'administrative_area' },
+    { label: 'Barrio', key: 'neighborhood' },
+    { label: 'Descripción', key: 'description' },
+    { label: 'Equipo', key: 'referred_to' },
+  ];
+
   return (
-    <Card p="lg" radius="md" withBorder>
-      <Title order={5}>Resumen del reporte</Title>
-      <Text size="xs">
-        Aquí tienes el resumen de tu reporte. Verifica que toda la información esté correcta.
-      </Text>
-      <Box my="md">
-        <Text size="sm">
-          <strong>Dirección:</strong> {data.incident_address || '-'}
+    <Card p="lg" radius="md" withBorder shadow="sm">
+      <Stack>
+        <Title order={5}>Resumen del reporte</Title>
+
+        <Text size="xs" c="dimmed">
+          Aquí tienes el resumen de tu reporte. Verifica que toda la información esté correcta.
         </Text>
-        <Text size="sm">
-          <strong>Comuna:</strong> {data.administrative_area || '-'}
-        </Text>
-        <Text size="sm">
-          <strong>Barrio:</strong> {data.neighborhood || '-'}
-        </Text>
-        <Text size="sm">
-          <strong>Descripción:</strong> {data.description || '-'}
-        </Text>
-        <Text size="sm">
-          <strong>Equipo:</strong> {data.referred_to || '-'}
-        </Text>
-      </Box>
-      <Group>
-        <Button size="xs" variant="outline" color="red" onClick={onCancel}>
-          Cancelar
-        </Button>
-        <Button color="green" size="xs" onClick={onConfirm}>
-          Confirmar y enviar
-        </Button>
-      </Group>
+
+        <Divider my="sm" />
+
+        <Box>
+          <Stack>
+            {reportFields.map((field) => (
+              <Group key={field.key} gap={4}>
+                <Text size="sm" fw={600}>
+                  {field.label}:
+                </Text>
+                <Text size="sm" lineClamp={2}>
+                  {data[field.key] || '-'}
+                </Text>
+              </Group>
+            ))}
+          </Stack>
+        </Box>
+
+        <Divider my="sm" />
+
+        <Group>
+          <Button size="xs" variant="outline" color="red" onClick={onCancel}>
+            Cancelar
+          </Button>
+          <Button color="green" size="xs" onClick={onConfirm}>
+            Confirmar y enviar
+          </Button>
+        </Group>
+      </Stack>
     </Card>
   );
 }
