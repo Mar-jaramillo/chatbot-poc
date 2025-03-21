@@ -1,8 +1,8 @@
 import { Paper, Stack } from '@mantine/core';
 import { MENU_OPTIONS } from '@/app/consts';
 import { useAppContext } from '@/app/context';
+import { MenuButton } from '../ui/menu-button';
 import { HeaderMenu } from './header-menu';
-import { MenuButton } from './menu-button';
 
 export function MenuOptions() {
   const { userServerResponse, handleMenuSelection } = useAppContext();

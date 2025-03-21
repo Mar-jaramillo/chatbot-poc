@@ -3,10 +3,14 @@ import { DeepChat } from 'deep-chat-react';
 import { Text } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { useDeepChatConnect } from '@/app/hooks';
-import { GenerateReport, SummaryReport } from '../components/generate-report';
-import { InitialFormConversation } from '../components/initial-form-conversation';
-import { MenuOptions } from '../components/menu-options';
-import { SatisfactionSurvey } from '../components/satisfactory-survey';
+import {
+  GenerateReport,
+  InitialFormConversation,
+  InitialOptions,
+  MenuOptions,
+  SatisfactionSurvey,
+  SummaryReport,
+} from '../components';
 import { ViewEnum } from '../types';
 
 export function useViewsContent() {
@@ -27,6 +31,8 @@ export function useViewsContent() {
 
   const renderContent = () => {
     switch (currentView) {
+      case ViewEnum.INITIAL:
+        return <InitialOptions />;
       case ViewEnum.LOGIN:
         return <InitialFormConversation />;
       case ViewEnum.MENU:

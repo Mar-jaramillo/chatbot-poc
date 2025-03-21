@@ -18,7 +18,7 @@ export function PopoverChat() {
     <Popover
       opened={opened}
       onChange={toggle}
-      position="top-end"
+      position="bottom-end"
       offset={2}
       withArrow
       middlewares={{ flip: true, shift: true, inline: true }}

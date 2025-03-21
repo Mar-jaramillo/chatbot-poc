@@ -20,7 +20,7 @@ interface AppContextProps {
   handleReportUpdate: (data: ReportData['data']) => void;
   handleReportComplete: (data: ReportData['data']) => void;
   handleReportCancel: () => void;
-  handleMenuSelection: (option: ViewEnum.CHAT | ViewEnum.REPORT) => void;
+  handleMenuSelection: (option: ViewEnum) => void;
   handleSurveyComplete: () => void;
   handleSurveyError: (error: Error) => void;
   confirmModalProps: {
@@ -34,7 +34,7 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [userServerResponse, setUserServerResponse] = useState<CostumerInitialInfo | null>(null);
-  const [currentView, setCurrentView] = useState<ViewType>(ViewEnum.LOGIN);
+  const [currentView, setCurrentView] = useState<ViewType>(ViewEnum.INITIAL);
   const [reportData, setReportData] = useState<ReportData>({
     currentStep: '',
     data: {},
@@ -227,7 +227,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setCurrentView(ViewEnum.MENU);
   };
 
-  const handleMenuSelection = (option: ViewEnum.CHAT | ViewEnum.REPORT) => {
+  const handleMenuSelection = (option: ViewEnum) => {
     if (option === ViewEnum.REPORT) {
       setReportData({
         currentStep: '',

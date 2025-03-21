@@ -1,9 +1,9 @@
-import { Welcome } from './components/popover-chat/popover-chat';
+import { PopoverChat } from './components';
 
 export default function HomePage() {
   return (
     <>
-      <Welcome />
+      <PopoverChat />
     </>
   );
 }
