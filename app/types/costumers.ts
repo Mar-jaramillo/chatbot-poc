@@ -21,6 +21,7 @@ export type CostumerInitialInfo = {
   conversation_id?: string;
   document_number?: string;
   document_type?: string;
+  organization_name?: string;
   person_type?: string;
 };
 
@@ -33,6 +34,6 @@ export const schemaInitialInfo = z.object({
     .string()
     .min(2, 'El apellido debe tener al menos 2 caracteres')
     .max(50, 'El apellido no puede tener más de 50 caracteres'),
-  email: z.string().email('Ingresa un correo electrónico válido'),
+  email: z.string().nullable(),
   phone_number: z.string(),
 });

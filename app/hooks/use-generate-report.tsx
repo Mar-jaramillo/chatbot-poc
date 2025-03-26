@@ -17,6 +17,7 @@ export function useGenerateReport() {
   const [personalData, setPersonalData] = useState({
     person_type: userServerResponse?.person_type || '',
     document_type: userServerResponse?.document_type || '',
+    organization_name: userServerResponse?.organization_name || '',
     document_number: userServerResponse?.document_number || '',
   });
   const [isUpdatingPersonalInfo, setIsUpdatingPersonalInfo] = useState(false);
@@ -70,6 +71,7 @@ export function useGenerateReport() {
         body: JSON.stringify({
           person_type: personalData.person_type,
           document_type: personalData.document_type,
+          organization_name: personalData.organization_name,
           document_number: personalData.document_number,
         }),
       });
@@ -113,6 +115,7 @@ export function useGenerateReport() {
       currentStep === 'LOCATION' &&
       (!userServerResponse?.person_type ||
         !userServerResponse?.document_type ||
+        !userServerResponse?.organization_name ||
         !userServerResponse?.document_number)
     ) {
       setCurrentStep('PERSONAL_INFO');
@@ -128,6 +131,7 @@ export function useGenerateReport() {
     return (
       (personalData.person_type || '').trim() !== '' &&
       (personalData.document_type || '').trim() !== '' &&
+      (personalData.organization_name || '').trim() !== '' &&
       (personalData.document_number || '').trim() !== ''
     );
   };

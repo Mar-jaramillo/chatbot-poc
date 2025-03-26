@@ -30,6 +30,7 @@ export function InitialFormConversation() {
         'first_name',
         'last_name',
         'person_type',
+        'organization_name',
         'document_type',
       ]);
       if (!isPersonalValid) {
@@ -94,7 +95,6 @@ export function InitialFormConversation() {
                   label="Correo electrónico"
                   placeholder="tucorreo@ejemplo.com"
                   {...register('email')}
-                  required
                   error={errors.email?.message}
                 />
                 <Checkbox
