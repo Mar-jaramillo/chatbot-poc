@@ -131,7 +131,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           icon: <IconCheck size={16} />,
           autoClose: 3000,
         });
-        setCurrentView(ViewEnum.SURVEY);
+        setCurrentView(ViewEnum.SURVEY); //TODO: Change to ViewEnum.REPORT_NUMBER
       } else {
         throw new Error('Error al crear el reporte');
       }

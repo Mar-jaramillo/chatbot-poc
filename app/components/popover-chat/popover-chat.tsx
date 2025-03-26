@@ -18,8 +18,8 @@ export function PopoverChat() {
       onChange={toggle}
       position="top-end"
       offset={1}
-      withArrow
       middlewares={{ flip: true, shift: true, inline: true }}
+      closeOnClickOutside={false}
     >
       <Popover.Target>
         <Box

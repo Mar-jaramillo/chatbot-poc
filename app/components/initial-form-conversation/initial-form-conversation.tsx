@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {  IconMailbox, IconUser } from '@tabler/icons-react';
+import { IconMailbox, IconUser } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
 import { Anchor, Box, Button, Checkbox, Paper, Stack, Tabs, Text, TextInput } from '@mantine/core';
 import { useAppContext } from '@/app/context';
@@ -32,7 +32,9 @@ export function InitialFormConversation() {
         'person_type',
         'document_type',
       ]);
-      if (!isPersonalValid) return;
+      if (!isPersonalValid) {
+        return;
+      }
     }
     setActiveTab(nextTab);
   };
@@ -70,30 +72,7 @@ export function InitialFormConversation() {
                   required
                   error={errors.last_name?.message}
                 />
-                <TextInput
-                  size="xs"
-                  label="Tipo de persona"
-                  placeholder="Selecciona una opción"
-                  {...register('person_type')}
-                  required
-                  error={errors.person_type?.message}
-                />
-                <TextInput
-                  size="xs"
-                  label="Tipo de documento"
-                  placeholder="Selecciona una opción"
-                  {...register('document_type')}
-                  required
-                  error={errors.document_type?.message}
-                />
-                <TextInput
-                  size="xs"
-                  label="Número de documento"
-                  placeholder="Escribe tu número de documento"
-                  {...register('document_number')}
-                  required
-                  error={errors.document_number?.message}
-                />
+
                 <Button size="xs" onClick={() => handleTabChange('contact')} fullWidth>
                   Siguiente
                 </Button>
