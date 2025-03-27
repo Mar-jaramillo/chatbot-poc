@@ -1,6 +1,22 @@
 import { useState } from 'react';
-import { IconThumbDown, IconThumbUp } from '@tabler/icons-react';
-import { Button, Card, Group, Stack, Text, Title } from '@mantine/core';
+import { IconMessageCircle, IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Textarea,
+  ThemeIcon,
+  Title,
+  Transition,
+  UnstyledButton,
+} from '@mantine/core';
 import { API_BASE_URL } from '@/app/consts';
 
 interface SatisfactionSurveyProps {
@@ -11,8 +27,14 @@ interface SatisfactionSurveyProps {
 
 export function SatisfactionSurvey({ customerId, onComplete, onError }: SatisfactionSurveyProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<boolean | null>(null);
+  const [feedback, setFeedback] = useState('');
 
-  const submitSatisfaction = async (isSatisfactory: boolean) => {
+  const submitSatisfaction = async () => {
+    if (selectedOption === null) {
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await fetch(`${API_BASE_URL}/chats/conversations/satisfaction/`, {
@@ -22,7 +44,8 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
         },
         body: JSON.stringify({
           customer_id: customerId,
-          is_satisfactory: isSatisfactory,
+          is_satisfactory: selectedOption,
+          customer_feedback: feedback.trim() || null,
         }),
       });
 
@@ -32,7 +55,6 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
 
       onComplete();
     } catch (error) {
-      console.error('Error en la encuesta de satisfacción:', error);
       onError(error instanceof Error ? error : new Error('Error desconocido'));
     } finally {
       setIsSubmitting(false);
@@ -40,38 +62,74 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
   };
 
   return (
-    <Card p="lg" radius="md" withBorder>
-      <Title order={4} ta="center" mb="md">
-        ¿Estás satisfecho con el reporte generado?
-      </Title>
-      <Text ta="center" mb="xl">
-        Tu opinión nos ayuda a mejorar nuestro servicio
-      </Text>
+    <Card padding="xl" radius="lg" withBorder shadow="sm">
+      <ActionIcon
+        style={{ position: 'absolute', top: 15, right: 15 }}
+        variant="subtle"
+        onClick={onComplete}
+      >
+        <IconX size={18} />
+      </ActionIcon>
 
-      <Stack>
-        <Group justify="center" gap="xl">
-          <Button
-            variant="outline"
-            color="red"
-            size="lg"
-            onClick={() => submitSatisfaction(false)}
-            disabled={isSubmitting}
-            leftSection={<IconThumbDown size={20} />}
-          >
-            No
-          </Button>
-          <Button
-            variant="outline"
-            color="green"
-            size="lg"
-            onClick={() => submitSatisfaction(true)}
-            disabled={isSubmitting}
-            leftSection={<IconThumbUp size={20} />}
-          >
-            Sí
-          </Button>
+      <Box my={40}>
+        <Title order={4} mb="sm">
+          ¿Cómo fue tu experiencia?
+        </Title>
+        <Text size="xs" c="dimmed">
+          Tu opinión es valiosa para ayudarnos a comprender mejor tus necesidades y ajustar nuestro
+          servicio de acuerdo a ellas.
+        </Text>
+        <Divider my="md" />
+        <Group justify="center">
+          {[false, true].map((option) => (
+            <UnstyledButton
+              px="md"
+              pb="xl"
+              key={option ? 'satisfied' : 'unsatisfied'}
+              onClick={() => setSelectedOption(option)}
+              style={{
+                opacity: selectedOption === null || selectedOption === option ? 1 : 0.4,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <ThemeIcon
+                size={50}
+                radius="xl"
+                color={option ? 'green' : 'red'}
+                variant={selectedOption === option ? 'filled' : 'light'}
+              >
+                {option ? <IconThumbUp size={25} /> : <IconThumbDown size={25} />}
+              </ThemeIcon>
+            </UnstyledButton>
+          ))}
         </Group>
-      </Stack>
+
+        {selectedOption !== null && (
+          <Textarea
+            pb="xl"
+            placeholder="Agregar un comentario..."
+            value={feedback}
+            onChange={(e) => setFeedback(e.currentTarget.value)}
+            rows={3}
+          />
+        )}
+
+        <Button
+          fullWidth
+          size="xs"
+          radius="xl"
+          color={selectedOption ? 'green' : selectedOption === false ? 'red' : 'blue'}
+          onClick={submitSatisfaction}
+          loading={isSubmitting}
+          disabled={selectedOption === null}
+          style={{
+            opacity: selectedOption === null ? 0.7 : 1,
+            transition: 'all 0.3s ease',
+          }}
+        >
+          Enviar ahora
+        </Button>
+      </Box>
     </Card>
   );
 }

@@ -11,8 +11,7 @@ export const MENU_OPTIONS: MenuOption[] = [
     id: 'report',
     label: 'Crear nuevo reporte',
     action: ViewEnum.REPORT,
-    variant: 'filled',
-    color: 'blue',
+    variant: 'outline',
   },
   {
     id: 'follow-up',

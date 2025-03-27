@@ -34,6 +34,11 @@ export function PersonalInfoStep({
 }: PersonalInfoStepProps) {
   const { personTypeOptions, documentTypeOptions, isLoading, error } = useFormOptions();
 
+  const isLegalEntity = personTypeOptions.some(
+    (option) =>
+      option.value === personalData.person_type && option.label.toLowerCase().includes('jurídica')
+  );
+
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
@@ -62,13 +67,17 @@ export function PersonalInfoStep({
           disabled={isLoading}
         />
 
-        <TextInput
-          size="xs"
-          label="Razón Social"
-          placeholder="Ingresa la razón social"
-          value={personalData.organization_name}
-          onChange={(e) => updatePersonalData('organization_name', e.target.value)}
-        />
+        {(isLegalEntity || personalData.organization_name) && (
+          <TextInput
+            size="xs"
+            label="Razón Social"
+            placeholder="Ingresa la razón social"
+            value={personalData.organization_name}
+            onChange={(e) => updatePersonalData('organization_name', e.target.value)}
+            required={isLegalEntity}
+          />
+        )}
+
         <Select
           size="xs"
           label="Tipo de Documento"

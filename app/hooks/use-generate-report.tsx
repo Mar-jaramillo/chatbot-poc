@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { API_BASE_URL, REPORT_STEPS } from '../consts';
 import { useAppContext } from '../context';
 import { ReportData } from '../types';
+import { useFormOptions } from './use-form-options';
 
 export function useGenerateReport() {
   const {
@@ -11,6 +12,8 @@ export function useGenerateReport() {
     userServerResponse,
     setUserServerResponse,
   } = useAppContext();
+
+  const { personTypeOptions } = useFormOptions();
 
   const [currentStep, setCurrentStep] = useState<keyof typeof REPORT_STEPS>('PERSONAL_INFO');
   const [formData, setFormData] = useState<ReportData['data']>(reportData.data || {});
@@ -78,12 +81,12 @@ export function useGenerateReport() {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        // Actualizar el contexto con los datos actualizados
+       
         setUserServerResponse({
           ...userServerResponse,
           ...updatedUser,
         });
-        // Avanzar al siguiente paso
+
         setCurrentStep('LOCATION');
       } else {
         throw new Error('Error al actualizar los datos del usuario');
@@ -126,14 +129,29 @@ export function useGenerateReport() {
     }
   };
 
-  // Validación de campos por paso
+  // Verificar si la persona seleccionada es jurídica
+  const isLegalEntity = () => {
+    return personTypeOptions.some(
+      (option) =>
+        option.value === personalData.person_type && option.label.toLowerCase().includes('jurídica')
+    );
+  };
+
+  // Validación de campos por paso con condicional para organización
   const isPersonalInfoStepValid = () => {
-    return (
+    // Verificación básica para todos los tipos de personas
+    const basicFieldsValid =
       (personalData.person_type || '').trim() !== '' &&
       (personalData.document_type || '').trim() !== '' &&
-      (personalData.organization_name || '').trim() !== '' &&
-      (personalData.document_number || '').trim() !== ''
-    );
+      (personalData.document_number || '').trim() !== '';
+
+    // Si es persona jurídica, también debe tener razón social
+    if (isLegalEntity()) {
+      return basicFieldsValid && (personalData.organization_name || '').trim() !== '';
+    }
+
+    // Para persona natural, no se requiere razón social
+    return basicFieldsValid;
   };
 
   const isLocationStepValid = () => {

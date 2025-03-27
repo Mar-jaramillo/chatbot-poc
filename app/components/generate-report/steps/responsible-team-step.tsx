@@ -1,4 +1,15 @@
-import { Box, Button, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Divider,
+  Group,
+  LoadingOverlay,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
 import { ReportData } from '@/app/types';
 
 type ResponsibleTeamStepProps = {
@@ -16,37 +27,68 @@ export function ResponsibleTeamStep({
   goToPreviousStep,
   isResponsibleTeamStepValid,
 }: ResponsibleTeamStepProps) {
+  const { teams, isLoading, error } = useResponsibleTeams();
+
+  const handleTeamSelect = (teamId: string) => {
+    updateFormData('referred_to', teamId);
+  };
+
   return (
-    <Box>
-      <Title order={5}>Equipo Responsable</Title>
+    <Box pos="relative">
+      <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+
+      <Title order={5}>Elige el equipo de atención</Title>
       <Text mb={15} size="xs">
-        Selecciona el equipo al que se debe derivar este caso
+        Elige el equipo que mejor pueda ayudar con el caso que estás reportando.
       </Text>
-      <Divider />
-      <Stack py="sm">
-        <Text fw={500} size="sm" mt={15} mb={5}>
-          Equipo *
+      <Divider mb="md" />
+
+      {error && (
+        <Text c="red" size="xs" my="md">
+          Error al cargar los equipos: {error}. Por favor, intenta de nuevo más tarde.
         </Text>
-        <Chip.Group
-          value={formData.referred_to || ''}
-          onChange={(value) => updateFormData('referred_to', value as string)}
-        >
-          <Group gap="md">
-            <Chip value="POLICE">POLICE</Chip>
-            <Chip value="SOCIAL_SERVICES">SOCIAL_SERVICES</Chip>
-            <Chip value="HEALTHCARE">HEALTHCARE</Chip>
-            <Chip value="OTHER">OTHER</Chip>
-          </Group>
-        </Chip.Group>
-        <Group justify="space-between" mt="md">
-          <Button size="xs" variant="outline" onClick={goToPreviousStep}>
-            Anterior
-          </Button>
-          <Button size="xs" onClick={goToNextStep} disabled={!isResponsibleTeamStepValid()}>
-            Finalizar
-          </Button>
-        </Group>
+      )}
+
+      <Stack>
+        {teams.map((team) => (
+          <Paper
+            key={team.id}
+            p="md"
+            radius="md"
+            withBorder
+            onClick={() => handleTeamSelect(team.id)}
+            style={(theme) => ({
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderColor:
+                formData.referred_to === team.id ? theme.colors.blue[6] : theme.colors.gray[3],
+              backgroundColor: formData.referred_to === team.id ? theme.colors.blue[0] : 'white',
+              '&:hover': {
+                borderColor: theme.colors.blue[4],
+                backgroundColor: theme.colors.gray[0],
+              },
+            })}
+          >
+            <Title order={6} mb="xs">
+              {team.name}
+            </Title>
+            <Text size="xs" c="dimmed">
+              {team.description}
+            </Text>
+          </Paper>
+        ))}
       </Stack>
+
+      <Divider my="md" />
+
+      <Group justify="space-between" mt="md">
+        <Button size="xs" variant="outline" onClick={goToPreviousStep}>
+          Anterior
+        </Button>
+        <Button size="xs" onClick={goToNextStep} disabled={!isResponsibleTeamStepValid()}>
+          Finalizar
+        </Button>
+      </Group>
     </Box>
   );
 }
