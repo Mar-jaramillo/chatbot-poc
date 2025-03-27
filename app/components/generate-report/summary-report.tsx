@@ -7,7 +7,6 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import {
-  Box,
   Button,
   Card,
   Divider,
@@ -83,12 +82,12 @@ export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps)
   return (
     <Card p="lg" radius="md" withBorder shadow="sm">
       <Stack>
-        <Box mb="xs">
+        <Group mb="xs">
           <Title order={5}>Resumen del reporte</Title>
           <Text size="xs" c="dimmed" mt={5}>
             Verifica que toda la información esté correcta antes de enviar.
           </Text>
-        </Box>
+        </Group>
         <Divider />
 
         <Stack>
@@ -102,7 +101,7 @@ export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps)
                   <Text size="xs" fw={600} c="dimmed">
                     {field.label}
                   </Text>
-                  <Text size="xs" lineClamp={4}>
+                  <Text size="xs" lineClamp={4} component="div">
                     {field.format
                       ? field.format(data[field.key] as string, teams)
                       : data[field.key] || '-'}

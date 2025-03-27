@@ -1,20 +1,15 @@
 import { useState } from 'react';
-import { IconMessageCircle, IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
+import { IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
 import {
   ActionIcon,
-  Box,
   Button,
   Card,
-  Center,
   Divider,
   Group,
-  Paper,
-  Stack,
   Text,
   Textarea,
   ThemeIcon,
   Title,
-  Transition,
   UnstyledButton,
 } from '@mantine/core';
 import { API_BASE_URL } from '@/app/consts';
@@ -71,7 +66,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
         <IconX size={18} />
       </ActionIcon>
 
-      <Box my={40}>
+      <Group my={40}>
         <Title order={4} mb="sm">
           ¿Cómo fue tu experiencia?
         </Title>
@@ -129,7 +124,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
         >
           Enviar ahora
         </Button>
-      </Box>
+      </Group>
     </Card>
   );
 }
