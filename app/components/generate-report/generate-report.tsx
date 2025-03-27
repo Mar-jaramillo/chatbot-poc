@@ -1,4 +1,4 @@
-import { Paper, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { REPORT_STEPS } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { useGenerateReport } from '@/app/hooks';
