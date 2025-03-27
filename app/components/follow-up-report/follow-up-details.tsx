@@ -9,6 +9,7 @@ import {
 import { ActionIcon, Button, Card, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { ViewEnum } from '@/app/types';
+import { CustomHeader } from '../ui';
 
 export function FollowUpDetails() {
   const { followUpData, setCurrentView } = useAppContext();
@@ -65,25 +66,26 @@ export function FollowUpDetails() {
   };
 
   return (
-    <Card padding="xl" radius="lg" withBorder shadow="sm">
+    <>
       <ActionIcon
-        style={{ position: 'absolute', top: 15, right: 15 }}
+        style={{ position: 'absolute', top: 30, right: 30 }}
         variant="subtle"
         onClick={handleBackToMenu}
       >
         <IconX size={18} />
       </ActionIcon>
       <Stack>
-        <Group mb="xs" gap={5}>
-          <Title order={5}>Detalles del Caso:</Title>
-          <Title order={5} c="blue">
-            {followUpData?.reference_number || '-'}
-          </Title>
-          <Text size="xs" c="dimmed" mt={5}>
-            A continuación se muestran los detalles y estado actual de tu caso.
-          </Text>
-        </Group>
-        <Divider />
+        <CustomHeader
+          title={
+            <Group gap={5}>
+              <Title order={5}>Detalles del Caso:</Title>
+              <Title order={5} c="blue">
+                {followUpData?.reference_number || '-'}
+              </Title>
+            </Group>
+          }
+          subtitle=" A continuación se muestran los detalles y estado actual de tu caso."
+        />
 
         <Stack my="md" gap={2}>
           <Group align="flex-start">
@@ -133,6 +135,6 @@ export function FollowUpDetails() {
           </Button>
         </Group>
       </Stack>
-    </Card>
+    </>
   );
 }

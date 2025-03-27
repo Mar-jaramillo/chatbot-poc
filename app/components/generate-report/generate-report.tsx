@@ -93,13 +93,13 @@ export function GenerateReport() {
   };
 
   return (
-    <Paper p="lg" radius="lg" shadow="sm">
+    <>
       <ProgressIndicator
         currentStep={currentStep}
         visibleSteps={getVisibleSteps()}
         onCancel={handleReportCancel}
       />
       {renderStepContent()}
-    </Paper>
+    </>
   );
 }

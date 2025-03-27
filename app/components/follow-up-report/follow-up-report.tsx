@@ -1,19 +1,10 @@
 import { useState } from 'react';
 import { IconSearch, IconX } from '@tabler/icons-react';
-import {
-  ActionIcon,
-  Button,
-  Card,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { ActionIcon, Button, Stack, TextInput } from '@mantine/core';
 import { API_BASE_URL } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { ViewEnum } from '@/app/types';
+import { CustomHeader } from '../ui';
 
 export function FollowUpReport() {
   const { userServerResponse, setCurrentView, setFollowUpData } = useAppContext();
@@ -62,9 +53,9 @@ export function FollowUpReport() {
   };
 
   return (
-    <Card p="lg" radius="md" withBorder shadow="sm">
+    <>
       <ActionIcon
-        style={{ position: 'absolute', top: 15, right: 15 }}
+        style={{ position: 'absolute', top: 30, right: 30 }}
         variant="subtle"
         onClick={() => setCurrentView(ViewEnum.MENU)}
       >
@@ -72,14 +63,10 @@ export function FollowUpReport() {
       </ActionIcon>
       <form onSubmit={handleSearchCase}>
         <Stack>
-          <Group mb="xs">
-            <Title order={5}>Seguimiento de Reporte</Title>
-            <Text size="xs" c="dimmed">
-              Ingresa el número de radicado de tu caso para consultar su estado actual.
-            </Text>
-          </Group>
-          <Divider />
-
+          <CustomHeader
+            title="Seguimiento de Reporte"
+            subtitle="Ingresa el número de radicado de tu caso para consultar su estado actual."
+          />
           <TextInput
             required
             label="Número de radicado"
@@ -101,6 +88,6 @@ export function FollowUpReport() {
           </Button>
         </Stack>
       </form>
-    </Card>
+    </>
   );
 }

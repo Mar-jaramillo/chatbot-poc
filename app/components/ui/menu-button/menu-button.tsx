@@ -4,6 +4,7 @@ import { MenuOption } from '@/app/types';
 export function MenuButton({ option, onClick }: { option: MenuOption; onClick: () => void }) {
   return (
     <Button
+      radius="xl"
       size="xs"
       variant={option.variant}
       color={option.color}

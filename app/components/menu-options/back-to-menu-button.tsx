@@ -1,5 +1,5 @@
 import { IconArrowLeft } from '@tabler/icons-react';
-import { Button, Group } from '@mantine/core';
+import { Button, Group, Text } from '@mantine/core';
 import { ViewEnum, ViewType } from '@/app/types';
 
 type BackToMenuButtonProps = {
@@ -18,7 +18,7 @@ export function BackToMenuButton(props: BackToMenuButtonProps) {
       <Button size="xs" variant="subtle" onClick={() => setCurrentView(ViewEnum.MENU)}>
         <Group>
           <IconArrowLeft size={16} />
-          <span>Volver al menú</span>
+          <Text size='xs'>Volver al menú</Text>
         </Group>
       </Button>
     </Group>

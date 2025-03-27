@@ -1,19 +1,17 @@
 import { useState } from 'react';
-import {  IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
+import { IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
 import {
   ActionIcon,
   Box,
   Button,
-  Card,
   Divider,
   Group,
-  Text,
   Textarea,
   ThemeIcon,
-  Title,
   UnstyledButton,
 } from '@mantine/core';
 import { API_BASE_URL } from '@/app/consts';
+import { CustomHeader } from '../ui';
 
 interface SatisfactionSurveyProps {
   customerId: string;
@@ -58,9 +56,9 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
   };
 
   return (
-    <Card padding="xl" radius="lg" withBorder shadow="sm">
+    <Group>
       <ActionIcon
-        style={{ position: 'absolute', top: 15, right: 15 }}
+        style={{ position: 'absolute', top: 30, right: 30 }}
         variant="subtle"
         onClick={onComplete}
       >
@@ -68,19 +66,17 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
       </ActionIcon>
 
       <Box my={40}>
-        <Title order={4} mb="sm">
-          ¿Cómo fue tu experiencia?
-        </Title>
-        <Text size="xs" c="dimmed">
-          Tu opinión es valiosa para ayudarnos a comprender mejor tus necesidades y ajustar nuestro
-          servicio de acuerdo a ellas.
-        </Text>
-        <Divider my="md" />
+        <CustomHeader
+          title=" ¿Cómo fue tu experiencia?"
+          subtitle="  Tu opinión es valiosa para ayudarnos a comprender mejor tus necesidades y ajustar nuestro
+          servicio de acuerdo a ellas."
+        />
+
         <Group justify="center">
           {[false, true].map((option) => (
             <UnstyledButton
               px="md"
-              pb="xl"
+              py="xl"
               key={option ? 'satisfied' : 'unsatisfied'}
               onClick={() => setSelectedOption(option)}
               style={{
@@ -109,7 +105,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
             rows={3}
           />
         )}
-
+        <Divider my="md" />
         <Button
           fullWidth
           size="xs"
@@ -126,6 +122,6 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
           Enviar ahora
         </Button>
       </Box>
-    </Card>
+    </Group>
   );
 }

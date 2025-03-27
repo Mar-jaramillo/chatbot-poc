@@ -1,8 +1,8 @@
-import { Paper, Stack } from '@mantine/core';
+import { Stack, Text } from '@mantine/core';
 import { MENU_OPTIONS } from '@/app/consts';
 import { useAppContext } from '@/app/context';
+import { CustomHeader } from '../ui';
 import { MenuButton } from '../ui/menu-button';
-import { HeaderMenu } from './header-menu';
 
 export function MenuOptions() {
   const { userServerResponse, handleMenuSelection } = useAppContext();
@@ -12,17 +12,27 @@ export function MenuOptions() {
   }
 
   return (
-    <Paper shadow="sm" radius="md">
-      <Stack p="md">
-        <HeaderMenu firstName={userServerResponse.first_name} />
-        {MENU_OPTIONS.map((option) => (
-          <MenuButton
-            key={option.id}
-            option={option}
-            onClick={() => handleMenuSelection(option.action)}
-          />
-        ))}
-      </Stack>
-    </Paper>
+    <Stack>
+      <CustomHeader
+        title={
+          <>
+            <Text size="lg" fw={700}>
+              {userServerResponse.first_name} 👋,
+            </Text>
+            <Text size="lg" fw={700}>
+              ¿Cómo puedo ayudarte?
+            </Text>
+          </>
+        }
+        subtitle="Para empezar elige una de las siguientes opciones:"
+      />
+      {MENU_OPTIONS.map((option) => (
+        <MenuButton
+          key={option.id}
+          option={option}
+          onClick={() => handleMenuSelection(option.action)}
+        />
+      ))}
+    </Stack>
   );
 }

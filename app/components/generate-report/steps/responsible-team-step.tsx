@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Divider,
   Group,
   LoadingOverlay,
   Paper,
@@ -11,6 +10,7 @@ import {
 } from '@mantine/core';
 import { useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
 import { ReportData } from '@/app/types';
+import { CustomHeader } from '../../ui';
 
 type ResponsibleTeamStepProps = {
   formData: ReportData['data'];
@@ -36,13 +36,10 @@ export function ResponsibleTeamStep({
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-
-      <Title order={5}>Elige el equipo de atención</Title>
-      <Text mb={15} size="xs">
-        Elige el equipo que mejor pueda ayudar con el caso que estás reportando.
-      </Text>
-      <Divider mb="md" />
-
+      <CustomHeader
+        title="Elige el equipo de atención"
+        subtitle="  Elige el equipo que mejor pueda ayudar con el caso que estás reportando."
+      />
       {error && (
         <Text c="red" size="xs" my="md">
           Error al cargar los equipos: {error}. Por favor, intenta de nuevo más tarde.
@@ -78,8 +75,6 @@ export function ResponsibleTeamStep({
           </Paper>
         ))}
       </Stack>
-
-      <Divider my="md" />
 
       <Group justify="space-between" mt="md">
         <Button size="xs" variant="outline" onClick={goToPreviousStep}>

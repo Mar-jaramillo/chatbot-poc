@@ -1,15 +1,13 @@
 import {
   Box,
   Button,
-  Divider,
   Group,
   Stack,
-  Text,
   Textarea,
   TextInput,
-  Title,
 } from '@mantine/core';
 import { ReportData } from '@/app/types';
+import { CustomHeader } from '../../ui';
 
 type DetailsStepProps = {
   formData: ReportData['data'];
@@ -28,11 +26,10 @@ export function DetailsStep({
 }: DetailsStepProps) {
   return (
     <Box>
-      <Title order={5}>Detalles del Caso</Title>
-      <Text mb={15} size="xs">
-        Proporciona detalles adicionales sobre el caso
-      </Text>
-      <Divider />
+      <CustomHeader
+        title="Detalles del Caso"
+        subtitle="Proporciona detalles adicionales sobre el caso."
+      />
       <Stack py="sm">
         <TextInput
           size="xs"

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IconMailbox, IconUser } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
-import { Anchor, Box, Button, Checkbox, Paper, Stack, Tabs, Text, TextInput } from '@mantine/core';
+import { Anchor, Box, Button, Checkbox, Group, Stack, Tabs, Text, TextInput } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { CostumerInitialInfo, schemaInitialInfo } from '@/app/types';
-import { InitialFormHeader } from './initial-form-header';
+import { CustomHeader } from '../ui';
 
 export function InitialFormConversation() {
   const { onSubmitInitialData } = useAppContext();
@@ -22,9 +22,7 @@ export function InitialFormConversation() {
     mode: 'onChange',
   });
 
-  // Verificar campos en cambio de pestaña
   const handleTabChange = async (nextTab: string) => {
-    // Si vamos a la segunda pestaña, validamos los campos de la primera
     if (nextTab === 'contact' && activeTab === 'personal') {
       const isPersonalValid = await trigger([
         'first_name',
@@ -41,8 +39,30 @@ export function InitialFormConversation() {
   };
 
   return (
-    <Paper shadow="sm" radius="md">
-      <InitialFormHeader />
+    <>
+      <CustomHeader
+        title={
+          <Group gap={5}>
+            <Text size="xl" fw={700}>
+              ¡Hola! Soy
+            </Text>
+            <Text
+              size="xl"
+              fw={900}
+              variant="gradient"
+              gradient={{ from: 'grape', to: 'cyan', deg: 102 }}
+            >
+              Abby,
+            </Text>
+            <br />
+            <Text size="xl" fw={700} lh={1}>
+              Tu asistente virtual
+            </Text>
+          </Group>
+        }
+        subtitle="Antes de comenzar por favor completa tus datos"
+      />
+
       <form onSubmit={handleSubmit(onSubmitInitialData)}>
         <Tabs value={activeTab} onChange={handleTabChange}>
           <Tabs.List grow>
@@ -54,9 +74,9 @@ export function InitialFormConversation() {
             </Tabs.Tab>
           </Tabs.List>
 
-          <Box p="md">
+          <Box>
             <Tabs.Panel value="personal">
-              <Stack>
+              <Stack pt="md">
                 <TextInput
                   size="xs"
                   label="Primer nombre"
@@ -81,7 +101,7 @@ export function InitialFormConversation() {
             </Tabs.Panel>
 
             <Tabs.Panel value="contact">
-              <Stack>
+              <Stack pt="md">
                 <TextInput
                   size="xs"
                   label="Número de contacto"
@@ -145,6 +165,6 @@ export function InitialFormConversation() {
           </Box>
         </Tabs>
       </form>
-    </Paper>
+    </>
   );
 }

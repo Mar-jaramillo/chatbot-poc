@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { DeepChat } from 'deep-chat-react';
-import { Text } from '@mantine/core';
+import { Paper, Text } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { useDeepChatConnect } from '@/app/hooks';
 import {

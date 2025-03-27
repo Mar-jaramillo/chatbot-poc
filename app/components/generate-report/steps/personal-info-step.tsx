@@ -1,16 +1,6 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Group,
-  LoadingOverlay,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Select, Stack, Text, TextInput } from '@mantine/core';
 import { useFormOptions } from '@/app/hooks';
+import { CustomHeader } from '../../ui';
 
 type PersonalInfoStepProps = {
   personalData: {
@@ -42,12 +32,10 @@ export function PersonalInfoStep({
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-
-      <Title order={5}>Información Personal</Title>
-      <Text mb={15} size="xs">
-        Por favor completa tu información personal para continuar con el reporte
-      </Text>
-      <Divider />
+      <CustomHeader
+        title="Información Personal"
+        subtitle="Por favor completa tu información personal para continuar con el reporte"
+      />
 
       {error && (
         <Text c="red" size="xs" mt="xs">
