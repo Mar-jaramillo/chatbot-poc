@@ -39,8 +39,8 @@ export function PopoverChat() {
         p={0}
         style={{
           overflow: 'hidden',
-          maxWidth: '95vw',
-          width: '350px',
+          maxWidth: '90vw',
+          width: '420px',
           maxHeight: '85vh',
           display: 'flex',
           flexDirection: 'column',
