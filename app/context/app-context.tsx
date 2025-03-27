@@ -86,7 +86,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         notifications.show({
           id: 'login-success',
-          title: '¡Bienvenido!',
+          title: '¡Te damos la bienvenida!',
           message: 'Tus datos se han enviado correctamente',
           color: 'green',
           icon: <IconCheck size={16} />,
@@ -107,7 +107,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
-
   const handleReportConfirm = async () => {
     try {
       const userId = userServerResponse?.id;
@@ -123,6 +122,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
+        const responseData = await response.json();
+
+        // Guardar el número de referencia y el estado en reportData
+        setReportData((prev) => ({
+          ...prev,
+          data: {
+            ...prev.data,
+            reference_number: responseData.reference_number,
+            status: responseData.status,
+          },
+        }));
+
         notifications.show({
           id: 'report-success',
           title: 'Reporte enviado',
@@ -131,7 +142,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           icon: <IconCheck size={16} />,
           autoClose: 3000,
         });
-        setCurrentView(ViewEnum.SURVEY); //TODO: Change to ViewEnum.REPORT_NUMBER
+
+        setCurrentView(ViewEnum.REFERENCE_NUMBER);
       } else {
         throw new Error('Error al crear el reporte');
       }
@@ -146,7 +158,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
-
   const handleReportUpdate = (data: ReportData['data']) => {
     setReportData((prev) => ({
       ...prev,

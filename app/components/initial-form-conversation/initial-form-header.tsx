@@ -15,6 +15,7 @@ export function InitialFormHeader() {
         >
           Abby,
         </Text>
+        <br />
         <Text size="xl" fw={700} lh={1}>
           Tu asistente virtual
         </Text>

@@ -48,6 +48,7 @@ export function DetailsStep({
           size="xs"
           label="Descripción"
           placeholder="Describe la situación detalladamente"
+          rows={4}
           minRows={5}
           value={formData.description || ''}
           onChange={(e) => updateFormData('description', e.target.value)}

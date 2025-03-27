@@ -47,10 +47,10 @@ export function InitialFormConversation() {
         <Tabs value={activeTab} onChange={handleTabChange}>
           <Tabs.List grow>
             <Tabs.Tab value="personal" leftSection={<IconUser size="0.8rem" />}>
-              <Text size="xs">Datos personales</Text>
+              <Text size="xs">Datos Personales</Text>
             </Tabs.Tab>
             <Tabs.Tab value="contact" leftSection={<IconMailbox size="0.8rem" />}>
-              <Text size="xs"> Contacto</Text>
+              <Text size="xs"> Datos de Contacto</Text>
             </Tabs.Tab>
           </Tabs.List>
 
@@ -109,7 +109,11 @@ export function InitialFormConversation() {
                     >
                       Tu información será tratada de forma segura y solo se usará con fines de
                       registro. Al comenzar, aceptas nuestro tratamiento de datos conforme a{' '}
-                      <Anchor href="/#" target="_blank" size="xs">
+                      <Anchor
+                        href="https://www.cali.gov.co/gobierno/publicaciones/147161/autorizacion-para-el-tratamiento-de-datos-personales/"
+                        target="_blank"
+                        size="xs"
+                      >
                         nuestras políticas
                       </Anchor>
                       .

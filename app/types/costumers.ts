@@ -8,8 +8,8 @@ export enum ViewEnum {
   REPORT = 'report',
   SUMMARY = 'summary',
   SURVEY = 'survey',
+  REFERENCE_NUMBER = 'reference_number',
 }
-
 export type ViewType = ViewEnum;
 
 export type CostumerInitialInfo = {

@@ -8,6 +8,7 @@ import {
   InitialFormConversation,
   InitialOptions,
   MenuOptions,
+  ReferenceNumber,
   SatisfactionSurvey,
   SummaryReport,
 } from '../components';
@@ -60,6 +61,13 @@ export function useViewsContent() {
             customerId={userServerResponse?.id || ''}
             onComplete={handleSurveyComplete}
             onError={handleSurveyError}
+          />
+        );
+      case ViewEnum.REFERENCE_NUMBER:
+        return (
+          <ReferenceNumber
+            referenceNumber={reportData.data.reference_number || ''}
+            status={reportData.data.status || 'PENDING'}
           />
         );
       case ViewEnum.CHAT:

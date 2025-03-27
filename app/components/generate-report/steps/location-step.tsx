@@ -20,7 +20,7 @@ export function LocationStep({
 }: LocationStepProps) {
   return (
     <Box>
-      <Title order={5}>Localización</Title>
+      <Title order={5}>Localización del Caso</Title>
       <Text mb={15} size="xs">
         Nos gustaría saber la ubicación del caso para poder gestionar tu reporte de manera más
         efectiva.

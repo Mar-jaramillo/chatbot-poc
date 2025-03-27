@@ -15,6 +15,7 @@ export type ReportData = {
     initial_analysis?: string;
     observations?: string;
     status?: string;
+    case_id?: string;
   };
   isComplete?: boolean;
 };
