@@ -1,6 +1,17 @@
 import { useState } from 'react';
-import { IconArrowLeft, IconCheck, IconCopy } from '@tabler/icons-react';
-import { ActionIcon, Box, Button, Card, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { IconArrowLeft, IconCheck, IconClockHour4, IconCopy } from '@tabler/icons-react';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { ViewEnum } from '@/app/types';
 
@@ -39,7 +50,8 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
           <Text size="sm" fw={500} c="dimmed">
             Número de radicado:
           </Text>
-          <Group >
+
+          <Group>
             <Title order={3} c="blue">
               {referenceNumber}
             </Title>
@@ -47,9 +59,20 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
               {copied ? <IconCheck size={18} /> : <IconCopy size={18} />}
             </ActionIcon>
           </Group>
-          <Text size="xs" bg="blue.1" p="xs" style={{ borderRadius: '4px' }}>
-            Estado: {status === 'PENDING' ? 'Pendiente' : status}
-          </Text>
+          <Group gap={6}>
+            <Text size="sm" fw={600}>
+              Estado:
+            </Text>
+            <Chip
+              size="sm"
+              defaultChecked
+              color="orange"
+              variant="light"
+              icon={<IconClockHour4 size={15} />}
+            >
+              {status === 'PENDING' ? 'Pendiente' : status}
+            </Chip>
+          </Group>
         </Stack>
 
         <Text size="xs" c="dimmed" ta="center">

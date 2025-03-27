@@ -16,7 +16,7 @@ export const MENU_OPTIONS: MenuOption[] = [
   {
     id: 'follow-up',
     label: 'Hacer seguimiento',
-    action: ViewEnum.REPORT, //TODO: Change to ViewEnum.FOLLOW_UP
+    action: ViewEnum.FOLLOW_UP,
     variant: 'outline',
   },
   {

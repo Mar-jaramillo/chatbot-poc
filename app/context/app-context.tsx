@@ -5,16 +5,19 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
-import { CostumerInitialInfo, ReportData, ViewEnum, ViewType } from '@/app/types';
+import { CostumerInitialInfo, FollowUpData, ReportData, ViewEnum, ViewType } from '@/app/types';
+
 import { ConfirmationModal } from '../components/ui';
 
 interface AppContextProps {
   userServerResponse: CostumerInitialInfo | null;
   currentView: ViewType;
   reportData: ReportData;
+  followUpData: FollowUpData | null; // Add follow-up data
   setCurrentView: (view: ViewType) => void;
   setUserServerResponse: (data: CostumerInitialInfo | null) => void;
   setReportData: React.Dispatch<React.SetStateAction<ReportData>>;
+  setFollowUpData: (data: FollowUpData | null) => void; // Add setter for follow-up data
   onSubmitInitialData: (data: CostumerInitialInfo) => Promise<void>;
   handleReportConfirm: () => Promise<void>;
   handleReportUpdate: (data: ReportData['data']) => void;
@@ -40,6 +43,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     data: {},
     isComplete: false,
   });
+  const [followUpData, setFollowUpData] = useState<FollowUpData | null>(null); // New state for follow-up
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   const [confirmModalOpened, { open: openConfirmModal, close: closeConfirmModal }] =
@@ -245,6 +249,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         data: {},
         isComplete: false,
       });
+    } else if (option === ViewEnum.FOLLOW_UP) {
+      // Clear follow-up data when selecting follow-up from menu
+      setFollowUpData(null);
     }
     setCurrentView(option);
   };
@@ -253,9 +260,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     userServerResponse,
     currentView,
     reportData,
+    followUpData,
     setCurrentView,
     setUserServerResponse,
     setReportData,
+    setFollowUpData,
     onSubmitInitialData,
     handleReportConfirm,
     handleReportUpdate,

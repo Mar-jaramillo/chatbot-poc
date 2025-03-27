@@ -9,6 +9,8 @@ export enum ViewEnum {
   SUMMARY = 'summary',
   SURVEY = 'survey',
   REFERENCE_NUMBER = 'reference_number',
+  FOLLOW_UP = 'follow_up',
+  FOLLOW_UP_DETAILS = 'follow_up_details',
 }
 export type ViewType = ViewEnum;
 

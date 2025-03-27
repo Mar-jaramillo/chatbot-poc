@@ -8,3 +8,4 @@ export * from './initial-options';
 export * from './popover-chat';
 export * from './ui';
 export * from './reference-number';
+export * from './follow-up-report';

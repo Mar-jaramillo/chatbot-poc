@@ -1,0 +1,138 @@
+import {
+  IconAlertCircle,
+  IconArrowLeft,
+  IconCheck,
+  IconClockHour4,
+  IconQuestionMark,
+  IconX,
+} from '@tabler/icons-react';
+import { ActionIcon, Button, Card, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { useAppContext } from '@/app/context';
+import { ViewEnum } from '@/app/types';
+
+export function FollowUpDetails() {
+  const { followUpData, setCurrentView } = useAppContext();
+
+  const getStatusInfo = () => {
+    switch (followUpData?.status) {
+      case 'PENDING':
+        return {
+          label: 'Pendiente',
+          color: 'orange',
+          icon: <IconClockHour4 size={15} />,
+          description:
+            'Tu caso está pendiente de revisión por nuestro equipo. Vuelve a consultarlo más tarde.',
+        };
+      case 'IN_PROGRESS':
+        return {
+          label: 'En proceso',
+          color: 'blue',
+          icon: <IconClockHour4 size={15} />,
+          description: 'Tu caso está siendo atendido por nuestro equipo.',
+        };
+      case 'RESOLVED':
+        return {
+          label: 'Resuelto',
+          color: 'green',
+          icon: <IconCheck size={15} />,
+          description: 'Tu caso ha sido resuelto exitosamente.',
+        };
+      case 'REJECTED':
+        return {
+          label: 'Rechazado',
+          color: 'red',
+          icon: <IconAlertCircle size={15} />,
+          description: 'Tu caso ha sido rechazado.',
+        };
+      default:
+        return {
+          label: 'Desconocido',
+          color: 'gray',
+          icon: <IconQuestionMark size={15} />,
+          description: 'No se pudo determinar el estado de tu caso.',
+        };
+    }
+  };
+
+  const statusInfo = getStatusInfo();
+
+  const handleBackToSearch = () => {
+    setCurrentView(ViewEnum.FOLLOW_UP);
+  };
+
+  const handleBackToMenu = () => {
+    setCurrentView(ViewEnum.MENU);
+  };
+
+  return (
+    <Card padding="xl" radius="lg" withBorder shadow="sm">
+      <ActionIcon
+        style={{ position: 'absolute', top: 15, right: 15 }}
+        variant="subtle"
+        onClick={handleBackToMenu}
+      >
+        <IconX size={18} />
+      </ActionIcon>
+      <Stack>
+        <Group mb="xs" gap={5}>
+          <Title order={5}>Detalles del Caso:</Title>
+          <Title order={5} c="blue">
+            {followUpData?.reference_number || '-'}
+          </Title>
+          <Text size="xs" c="dimmed" mt={5}>
+            A continuación se muestran los detalles y estado actual de tu caso.
+          </Text>
+        </Group>
+        <Divider />
+
+        <Stack my="md" gap={2}>
+          <Group align="flex-start">
+            <Stack>
+              <Group gap={6}>
+                <Text size="sm" fw={600}>
+                  Estado:
+                </Text>
+                <Chip
+                  size="sm"
+                  defaultChecked
+                  color={statusInfo.color}
+                  variant="light"
+                  icon={statusInfo.icon}
+                >
+                  {statusInfo.label}
+                </Chip>
+              </Group>
+
+              <Text size="xs" c="dimmed">
+                {statusInfo.description}
+              </Text>
+            </Stack>
+          </Group>
+          {followUpData?.observations && (
+            <Stack>
+              <Text size="sm" fw={600}>
+                Observaciones:
+              </Text>
+              <Text size="xs" p="xs" bg="gray.0" style={{ borderRadius: '4px' }}>
+                {followUpData.observations}
+              </Text>
+            </Stack>
+          )}
+        </Stack>
+
+        <Divider my="md" />
+
+        <Group>
+          <Button
+            leftSection={<IconArrowLeft size={16} />}
+            onClick={handleBackToSearch}
+            variant="outline"
+            size="xs"
+          >
+            Buscar otro caso
+          </Button>
+        </Group>
+      </Stack>
+    </Card>
+  );
+}

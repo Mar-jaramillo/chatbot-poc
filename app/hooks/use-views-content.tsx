@@ -4,6 +4,8 @@ import { Text } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { useDeepChatConnect } from '@/app/hooks';
 import {
+  FollowUpDetails,
+  FollowUpReport,
   GenerateReport,
   InitialFormConversation,
   InitialOptions,
@@ -70,6 +72,10 @@ export function useViewsContent() {
             status={reportData.data.status || 'PENDING'}
           />
         );
+      case ViewEnum.FOLLOW_UP:
+        return <FollowUpReport />;
+      case ViewEnum.FOLLOW_UP_DETAILS:
+        return <FollowUpDetails />;
       case ViewEnum.CHAT:
         return (
           <DeepChat

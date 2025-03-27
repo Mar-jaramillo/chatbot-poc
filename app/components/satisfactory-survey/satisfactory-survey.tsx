@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
+import {  IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
 import {
   ActionIcon,
+  Box,
   Button,
   Card,
   Divider,
@@ -66,7 +67,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
         <IconX size={18} />
       </ActionIcon>
 
-      <Group my={40}>
+      <Box my={40}>
         <Title order={4} mb="sm">
           ¿Cómo fue tu experiencia?
         </Title>
@@ -124,7 +125,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
         >
           Enviar ahora
         </Button>
-      </Group>
+      </Box>
     </Card>
   );
 }
