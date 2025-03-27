@@ -2,11 +2,16 @@ import { Text } from '@mantine/core';
 import { REPORT_STEPS } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { useGenerateReport } from '@/app/hooks';
-import { ProgressIndicator } from './progress-indicator';
-import { DetailsStep, LocationStep, PersonalInfoStep, ResponsibleTeamStep } from './steps';
+import {
+  DetailsStep,
+  FormStepper,
+  LocationStep,
+  PersonalInfoStep,
+  ResponsibleTeamStep,
+} from './steps';
 
 export function GenerateReport() {
-  const { handleReportCancel, userServerResponse } = useAppContext();
+  const { userServerResponse } = useAppContext();
 
   const {
     currentStep,
@@ -94,11 +99,7 @@ export function GenerateReport() {
 
   return (
     <>
-      <ProgressIndicator
-        currentStep={currentStep}
-        visibleSteps={getVisibleSteps()}
-        onCancel={handleReportCancel}
-      />
+      <FormStepper currentStep={currentStep} visibleSteps={getVisibleSteps()} />
       {renderStepContent()}
     </>
   );

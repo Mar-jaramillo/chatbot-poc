@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { IconThumbDown, IconThumbUp, IconX } from '@tabler/icons-react';
+import { IconThumbDown, IconThumbUp } from '@tabler/icons-react';
 import {
-  ActionIcon,
   Box,
   Button,
   Divider,
@@ -57,14 +56,6 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
 
   return (
     <Group>
-      <ActionIcon
-        style={{ position: 'absolute', top: 30, right: 30 }}
-        variant="subtle"
-        onClick={onComplete}
-      >
-        <IconX size={18} />
-      </ActionIcon>
-
       <Box my={40}>
         <CustomHeader
           title=" ¿Cómo fue tu experiencia?"

@@ -6,7 +6,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
 import { CostumerInitialInfo, FollowUpData, ReportData, ViewEnum, ViewType } from '@/app/types';
-
 import { ConfirmationModal } from '../components/ui';
 
 interface AppContextProps {
@@ -26,6 +25,7 @@ interface AppContextProps {
   handleMenuSelection: (option: ViewEnum) => void;
   handleSurveyComplete: () => void;
   handleSurveyError: (error: Error) => void;
+  handleGoToMenu: () => void;
   confirmModalProps: {
     opened: boolean;
     open: () => void;
@@ -43,7 +43,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     data: {},
     isComplete: false,
   });
-  const [followUpData, setFollowUpData] = useState<FollowUpData | null>(null); // New state for follow-up
+  const [followUpData, setFollowUpData] = useState<FollowUpData | null>(null);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   const [confirmModalOpened, { open: openConfirmModal, close: closeConfirmModal }] =
@@ -54,6 +54,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     confirmLabel: 'Confirmar',
     cancelLabel: 'Cancelar',
   });
+
+  const handleGoToMenu = () => {
+    setCurrentView(ViewEnum.MENU);
+  };
 
   const showConfirmation = (onConfirm: () => void, config?: Partial<typeof confirmModalConfig>) => {
     setPendingAction(() => onConfirm);
@@ -261,6 +265,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     currentView,
     reportData,
     followUpData,
+    handleGoToMenu,
     setCurrentView,
     setUserServerResponse,
     setReportData,

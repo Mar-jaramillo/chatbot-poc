@@ -51,7 +51,7 @@ export function PopoverChat() {
         <ScrollArea style={{ flexGrow: 1, overflowY: 'auto' }}>
           <Paper bg="#F0F0F2" p="lg" radius={0}>
             <Paper p="lg" radius="lg" shadow="sm">
-              <BackToMenuButton currentView={currentView} setCurrentView={setCurrentView} />
+              <BackToMenuButton />
               {renderContent()}
             </Paper>
           </Paper>

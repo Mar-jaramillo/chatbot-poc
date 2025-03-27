@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { IconSearch, IconX } from '@tabler/icons-react';
-import { ActionIcon, Button, Stack, TextInput } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
+import { Button, Divider, Stack, TextInput } from '@mantine/core';
 import { API_BASE_URL } from '@/app/consts';
 import { useAppContext } from '@/app/context';
 import { ViewEnum } from '@/app/types';
@@ -54,13 +54,6 @@ export function FollowUpReport() {
 
   return (
     <>
-      <ActionIcon
-        style={{ position: 'absolute', top: 30, right: 30 }}
-        variant="subtle"
-        onClick={() => setCurrentView(ViewEnum.MENU)}
-      >
-        <IconX size={18} />
-      </ActionIcon>
       <form onSubmit={handleSearchCase}>
         <Stack>
           <CustomHeader
@@ -76,6 +69,7 @@ export function FollowUpReport() {
             error={error}
             size="xs"
           />
+          <Divider my="md" />
 
           <Button
             type="submit"

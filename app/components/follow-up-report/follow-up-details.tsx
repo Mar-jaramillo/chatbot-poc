@@ -4,9 +4,8 @@ import {
   IconCheck,
   IconClockHour4,
   IconQuestionMark,
-  IconX,
 } from '@tabler/icons-react';
-import { ActionIcon, Button, Card, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { Button, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { ViewEnum } from '@/app/types';
 import { CustomHeader } from '../ui';
@@ -61,19 +60,8 @@ export function FollowUpDetails() {
     setCurrentView(ViewEnum.FOLLOW_UP);
   };
 
-  const handleBackToMenu = () => {
-    setCurrentView(ViewEnum.MENU);
-  };
-
   return (
     <>
-      <ActionIcon
-        style={{ position: 'absolute', top: 30, right: 30 }}
-        variant="subtle"
-        onClick={handleBackToMenu}
-      >
-        <IconX size={18} />
-      </ActionIcon>
       <Stack>
         <CustomHeader
           title={
