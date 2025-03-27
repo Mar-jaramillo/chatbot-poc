@@ -1,9 +1,9 @@
 import {
   IconAlertCircle,
-  IconArrowLeft,
   IconCheck,
   IconClockHour4,
   IconQuestionMark,
+  IconSearch,
 } from '@tabler/icons-react';
 import { Button, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { useAppContext } from '@/app/context';
@@ -114,12 +114,12 @@ export function FollowUpDetails() {
 
         <Group>
           <Button
-            leftSection={<IconArrowLeft size={16} />}
+            leftSection={<IconSearch size={16} />}
             onClick={handleBackToSearch}
             variant="outline"
             size="xs"
           >
-            Buscar otro caso
+            Buscar Otro Caso
           </Button>
         </Group>
       </Stack>

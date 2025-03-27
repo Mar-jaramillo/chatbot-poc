@@ -1,6 +1,5 @@
 import { Box, Paper, Popover, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useAppContext } from '@/app/context';
 import { useViewsContent } from '@/app/hooks';
 import { BackToMenuButton } from '../menu-options';
 import { ChatAvatarButton } from './chat-avatar-button';
@@ -9,7 +8,6 @@ import { PopoverChatHeader } from './popover-chat-header';
 
 export function PopoverChat() {
   const [opened, { toggle }] = useDisclosure(false);
-  const { currentView, setCurrentView } = useAppContext();
   const { renderContent } = useViewsContent();
 
   return (

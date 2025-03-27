@@ -56,7 +56,7 @@ export function SatisfactionSurvey({ customerId, onComplete, onError }: Satisfac
 
   return (
     <Group>
-      <Box my={40}>
+      <Box my={10}>
         <CustomHeader
           title=" ¿Cómo fue tu experiencia?"
           subtitle="  Tu opinión es valiosa para ayudarnos a comprender mejor tus necesidades y ajustar nuestro

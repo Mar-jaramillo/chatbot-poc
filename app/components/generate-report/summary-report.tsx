@@ -5,18 +5,8 @@ import {
   IconMapPin,
   IconNotes,
   IconUsers,
-  IconX,
 } from '@tabler/icons-react';
-import {
-  ActionIcon,
-  Button,
-  Divider,
-  Group,
-  Skeleton,
-  Stack,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Button, Divider, Group, Skeleton, Stack, Text, ThemeIcon } from '@mantine/core';
 import { ResponsibleTeam, useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
 import { ReportData } from '@/app/types';
 import { CustomHeader } from '../ui';
@@ -82,13 +72,6 @@ export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps)
 
   return (
     <Stack>
-      <ActionIcon
-        style={{ position: 'absolute', top: 30, right: 30 }}
-        variant="subtle"
-        onClick={onCancel}
-      >
-        <IconX size={18} />
-      </ActionIcon>
       <CustomHeader
         title="Resumen del reporte"
         subtitle=" Verifica que toda la información esté correcta antes de enviar."

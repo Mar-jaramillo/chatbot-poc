@@ -14,7 +14,7 @@ export function BackToMenuButton() {
   }
 
   return (
-    <Group justify="flex-start" mb="md">
+    <Group justify="flex-end" pb="md">
       <Button size="xs" variant="subtle" onClick={handleGoToMenu}>
         <Group>
           <IconArrowLeft size={16} />

@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { IconArrowLeft, IconCheck, IconClockHour4, IconCopy } from '@tabler/icons-react';
-import { ActionIcon, Button, Chip, Group, Stack, Text, Title } from '@mantine/core';
-import { useAppContext } from '@/app/context';
-import { ViewEnum } from '@/app/types';
+import { IconCheck, IconClockHour4, IconCopy } from '@tabler/icons-react';
+import { ActionIcon, Chip, Group, Stack, Text, Title } from '@mantine/core';
 import { CustomHeader } from '../ui';
 
 interface ReferenceNumberProps {
@@ -12,7 +10,6 @@ interface ReferenceNumberProps {
 
 export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProps) {
   const [copied, setCopied] = useState(false);
-  const { setCurrentView } = useAppContext();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referenceNumber);
@@ -20,16 +17,11 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleGoToMenu = () => {
-    setCurrentView(ViewEnum.MENU);
-  };
-
   return (
     <Stack>
       <CustomHeader
         title="¡Reporte enviado con éxito 👍! "
-        subtitle=" Tu reporte ha sido enviado correctamente. Guarda este número de referencia para dar
-            seguimiento a tu caso."
+        subtitle="Tu reporte ha sido enviado correctamente. Para consultar el estado de tu caso, puedes acceder al botón Hacer seguimiento  en el menú principal."
       />
 
       <Stack align="center" my="lg">
@@ -62,20 +54,9 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
       </Stack>
 
       <Text size="xs" c="dimmed" ta="center">
-        Puedes usar este número de referencia para hacer seguimiento a tu reporte en cualquier
-        momento.
+        Este es tu <strong>identificador único</strong>. Guárdalo para que puedas consultar el
+        estado de tu caso en cualquier momento.
       </Text>
-
-      <Button
-        leftSection={<IconArrowLeft size={16} />}
-        onClick={handleGoToMenu}
-        variant="light"
-        color="blue"
-        size="xs"
-        mt="md"
-      >
-        Volver al menú principal
-      </Button>
     </Stack>
   );
 }
