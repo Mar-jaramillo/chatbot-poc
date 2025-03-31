@@ -76,7 +76,7 @@ export function FollowUpDetails() {
                 </Text>
                 <Chip
                   size="sm"
-                  defaultChecked
+                  checked
                   color={statusInfo.color}
                   variant="light"
                   icon={statusInfo.icon}

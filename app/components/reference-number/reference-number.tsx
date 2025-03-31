@@ -43,7 +43,7 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
           </Text>
           <Chip
             size="sm"
-            defaultChecked
+            checked
             color="orange"
             variant="light"
             icon={<IconClockHour4 size={15} />}
