@@ -23,7 +23,11 @@ export function InitialFormConversation() {
     mode: 'onChange',
   });
 
-  const handleTabChange = async (nextTab: string) => {
+  const handleTabChange = async (nextTab: string | null) => {
+    if (!nextTab) {
+      return;
+    }
+
     if (nextTab === 'contact' && activeTab === 'personal') {
       const isPersonalValid = await trigger([
         'first_name',

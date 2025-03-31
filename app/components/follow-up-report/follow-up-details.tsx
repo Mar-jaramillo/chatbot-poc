@@ -1,5 +1,4 @@
 import {
-  IconAlertCircle,
   IconCheck,
   IconClockHour4,
   IconQuestionMark,
@@ -30,19 +29,12 @@ export function FollowUpDetails() {
           icon: <IconClockHour4 size={15} />,
           description: 'Tu caso está siendo atendido por nuestro equipo.',
         };
-      case 'RESOLVED':
+      case 'COMPLETED':
         return {
           label: 'Resuelto',
           color: 'green',
           icon: <IconCheck size={15} />,
           description: 'Tu caso ha sido resuelto exitosamente.',
-        };
-      case 'REJECTED':
-        return {
-          label: 'Rechazado',
-          color: 'red',
-          icon: <IconAlertCircle size={15} />,
-          description: 'Tu caso ha sido rechazado.',
         };
       default:
         return {

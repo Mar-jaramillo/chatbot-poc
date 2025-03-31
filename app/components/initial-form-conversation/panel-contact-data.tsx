@@ -6,7 +6,7 @@ import { CostumerInitialInfo } from '@/app/types';
 type PanelContactDataProps = {
   register: UseFormRegister<CostumerInitialInfo>;
   errors: FieldErrors<CostumerInitialInfo>;
-  handleTabChange: (nextTab: string) => Promise<void>;
+  handleTabChange: (nextTab: string | null) => Promise<void>;
   isSubmitting: boolean;
 };
 

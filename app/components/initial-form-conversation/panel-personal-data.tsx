@@ -5,7 +5,7 @@ import { CostumerInitialInfo } from '@/app/types';
 type PanelPersonalDataProps = {
   register: UseFormRegister<CostumerInitialInfo>;
   errors: FieldErrors<CostumerInitialInfo>;
-  handleTabChange: (nextTab: string) => Promise<void>;
+  handleTabChange: (nextTab: string | null) => Promise<void>;
 };
 
 export function PanelPersonalData({ register, errors, handleTabChange }: PanelPersonalDataProps) {

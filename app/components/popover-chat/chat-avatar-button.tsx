@@ -9,7 +9,7 @@ export function ChatAvatarButton({ toggle }: { toggle: () => void }) {
           size="lg"
           component="button"
           onClick={toggle}
-          src="/images/abbi-avatar.png"
+          src="/images/abby_avatar.svg"
           alt="Abby - Asistente virtual"
           style={{ cursor: 'pointer' }}
         />

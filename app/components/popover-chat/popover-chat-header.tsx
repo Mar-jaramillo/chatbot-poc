@@ -6,7 +6,7 @@ export function PopoverChatHeader({ toggle }: { toggle: () => void }) {
     <Box bg="#292EFF" py="xs" px="lg" style={{ flexShrink: 0 }}>
       <Group>
         <Indicator inline processing color="green" size={12} offset={5} withBorder>
-          <Avatar src="/images/abbi-avatar.png" size="md" radius="xl" />
+          <Avatar src="/images/abby_avatar.svg" size="md" radius="xl" />
         </Indicator>
         <Stack gap={0}>
           <Group gap={3}>

@@ -24,7 +24,7 @@ export function MenuOptions() {
             </Text>
           </>
         }
-        subtitle="Para empezar elige una de las siguientes opciones:"
+        subtitle="Elige la opción que deseas realizar"
       />
       {MENU_OPTIONS.map((option) => (
         <MenuButton
