@@ -6,3 +6,4 @@ export * from './use-views-content';
 export * from './use-form-options';
 export * from './use-responsible-teams';
 export * from './follow-up-report';
+export * from './initial-form';

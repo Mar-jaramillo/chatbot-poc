@@ -16,7 +16,9 @@ export function PanelContactData({
   handleTabChange,
   isSubmitting,
 }: PanelContactDataProps) {
+
   const [checked, setChecked] = useState(false);
+  
   return (
     <Tabs.Panel value="contact">
       <Stack pt="md">
