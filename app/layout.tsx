@@ -1,11 +1,8 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
-import React from 'react';
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import { theme } from '../theme';
-import { AppProvider } from './context';
+import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
+import { Providers } from './provider';
 
 export const metadata = {
   title: 'Chat Bot ',
@@ -24,10 +21,7 @@ export default function RootLayout({ children }: { children: any }) {
         />
       </head>
       <body>
-        <MantineProvider theme={theme}>
-          <Notifications position="bottom-right" zIndex={1000} />
-          <AppProvider>{children}</AppProvider>
-        </MantineProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

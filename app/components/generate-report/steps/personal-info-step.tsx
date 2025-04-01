@@ -1,4 +1,4 @@
-import { Box, Button, Group, LoadingOverlay, Select, Stack, Text, TextInput } from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Select, Stack, TextInput } from '@mantine/core';
 import { useFormOptions } from '@/app/hooks';
 import { CustomHeader } from '../../ui';
 
@@ -22,9 +22,9 @@ export function PersonalInfoStep({
   isPersonalInfoStepValid,
   goToNextStep,
 }: PersonalInfoStepProps) {
-  const { personTypeOptions, documentTypeOptions, isLoading, error } = useFormOptions();
+  const { personTypeOptions, documentTypeOptions, isLoading } = useFormOptions();
 
-  const isLegalEntity = personTypeOptions.some(
+  const isLegalEntity = personTypeOptions?.some(
     (option) =>
       option.value === personalData.person_type && option.label.toLowerCase().includes('jurídica')
   );
@@ -36,12 +36,6 @@ export function PersonalInfoStep({
         title="Información Personal"
         subtitle="Por favor completa tu información personal para continuar con el reporte"
       />
-
-      {error && (
-        <Text c="red" size="xs" mt="xs">
-          Error al cargar los datos: {error}. Por favor, intenta de nuevo más tarde.
-        </Text>
-      )}
 
       <Stack py="sm">
         <Select

@@ -7,6 +7,7 @@ import { notifications } from '@mantine/notifications';
 import { API_BASE_URL } from '@/app/consts';
 import { CostumerInitialInfo, FollowUpData, ReportData, ViewEnum, ViewType } from '@/app/types';
 import { ConfirmationModal } from '../components/ui';
+import { useCreateCustomer } from '../services';
 
 interface AppContextProps {
   userServerResponse: CostumerInitialInfo | null;
@@ -75,34 +76,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     closeConfirmModal();
   };
 
+  const { mutateAsync: createCustomer } = useCreateCustomer();
+
   const onSubmitInitialData = async (data: CostumerInitialInfo) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/chats/customers/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
+      const response = await createCustomer(data);
+      const responseData = response;
+      setUserServerResponse(responseData);
+      setCurrentView(ViewEnum.MENU);
+      notifications.show({
+        id: 'login-success',
+        title: '¡Te damos la bienvenida!',
+        message: 'Tus datos se han enviado correctamente',
+        color: 'green',
+        icon: <IconCheck size={16} />,
+        autoClose: 3000,
       });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        setUserServerResponse(responseData);
-        setCurrentView(ViewEnum.MENU);
-
-        notifications.show({
-          id: 'login-success',
-          title: '¡Te damos la bienvenida!',
-          message: 'Tus datos se han enviado correctamente',
-          color: 'green',
-          icon: <IconCheck size={16} />,
-          autoClose: 3000,
-        });
-      } else {
-        throw new Error('Error al crear los Datos iniciales');
-      }
     } catch (error) {
       setCurrentView(ViewEnum.LOGIN);
       notifications.show({
@@ -115,6 +104,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
+
   const handleReportConfirm = async () => {
     try {
       const userId = userServerResponse?.id;

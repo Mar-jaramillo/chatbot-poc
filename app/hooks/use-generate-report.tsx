@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { notifications } from '@mantine/notifications';
 import { API_BASE_URL, REPORT_STEPS } from '../consts';
 import { useAppContext } from '../context';
+import { useUpdateCustomer } from '../services';
 import { ReportData } from '../types';
 import { useFormOptions } from './use-form-options';
 
@@ -57,6 +59,7 @@ export function useGenerateReport() {
       [field]: value,
     }));
   };
+  const { mutateAsync: updateCustomer } = useUpdateCustomer();
 
   // Función para enviar actualización de datos personales
   const updateCustomerInfo = async () => {
@@ -66,33 +69,32 @@ export function useGenerateReport() {
 
     setIsUpdatingPersonalInfo(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/chats/customers/${userServerResponse.id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          person_type: personalData.person_type,
-          document_type: personalData.document_type,
-          organization_name: personalData.organization_name,
-          document_number: personalData.document_number,
-        }),
+      // Preparar los datos que quieres actualizar
+      const customerData = {
+        id: userServerResponse.id,
+        person_type: personalData.person_type,
+        document_type: personalData.document_type,
+        organization_name: personalData.organization_name,
+        document_number: personalData.document_number,
+      };
+
+      // Llamar al método de actualización
+      const updatedUser = await updateCustomer(customerData);
+
+      // Actualizar el estado con la respuesta
+      setUserServerResponse({
+        ...userServerResponse,
+        ...updatedUser,
       });
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-       
-        setUserServerResponse({
-          ...userServerResponse,
-          ...updatedUser,
-        });
-
-        setCurrentStep('LOCATION');
-      } else {
-        throw new Error('Error al actualizar los datos del usuario');
-      }
+      setCurrentStep('LOCATION');
     } catch (error) {
-      console.error('Error al actualizar datos personales:', error);
+      notifications.show({
+        title: 'Error al guardar el Registro',
+        message:
+          'Ha ocurrido un error al intentar guardar el Registro, por favor intenta de nuevo.',
+        color: 'red',
+      });
     } finally {
       setIsUpdatingPersonalInfo(false);
     }
@@ -131,7 +133,7 @@ export function useGenerateReport() {
 
   // Verificar si la persona seleccionada es jurídica
   const isLegalEntity = () => {
-    return personTypeOptions.some(
+    return personTypeOptions?.some(
       (option) =>
         option.value === personalData.person_type && option.label.toLowerCase().includes('jurídica')
     );

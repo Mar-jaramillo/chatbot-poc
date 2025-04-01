@@ -19,3 +19,9 @@ export type ReportData = {
   };
   isComplete?: boolean;
 };
+
+export type ResponsibleTeam = {
+  id: string;
+  name: string;
+  description: string;
+};

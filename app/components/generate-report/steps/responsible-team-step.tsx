@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Group,
-  LoadingOverlay,
-  Paper,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Paper, Stack, Text, Title } from '@mantine/core';
 import { useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
 import { ReportData } from '@/app/types';
 import { CustomHeader } from '../../ui';
@@ -42,12 +33,12 @@ export function ResponsibleTeamStep({
       />
       {error && (
         <Text c="red" size="xs" my="md">
-          Error al cargar los equipos: {error}. Por favor, intenta de nuevo más tarde.
+          Error al cargar los equipos. Por favor, intenta de nuevo más tarde.
         </Text>
       )}
 
       <Stack>
-        {teams.map((team) => (
+        {teams?.map((team) => (
           <Paper
             key={team.id}
             p="md"
