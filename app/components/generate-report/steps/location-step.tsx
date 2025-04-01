@@ -1,4 +1,5 @@
-import { Box, Button, Divider, Group, Stack, Text, TextInput, Title } from '@mantine/core';
+import { Box, Button, Group, Select, Stack, TextInput } from '@mantine/core';
+import { useLocationStep } from '@/app/hooks';
 import { ReportData } from '@/app/types';
 import { CustomHeader } from '../../ui';
 
@@ -19,6 +20,14 @@ export function LocationStep({
   isLocationStepValid,
   showPreviousButton,
 }: LocationStepProps) {
+  const {
+    handleCommuneChange,
+    getCommuneOptions,
+    loadingCommunes,
+    getNeighborhoodOptions,
+    loadingNeighborhoods,
+  } = useLocationStep(formData, updateFormData);
+
   return (
     <Box>
       <CustomHeader
@@ -37,22 +46,26 @@ export function LocationStep({
           required
         />
 
-        <TextInput
+        <Select
           size="xs"
           label="Comuna"
           placeholder="Ingresa la comuna"
-          value={formData.administrative_area || ''}
-          onChange={(e) => updateFormData('administrative_area', e.target.value)}
+          value={formData.administrative_area_id || ''}
+          onChange={handleCommuneChange}
+          data={getCommuneOptions()}
           required
+          disabled={loadingCommunes}
         />
 
-        <TextInput
+        <Select
           size="xs"
           label="Barrio"
-          placeholder="Ingresa el barrio"
-          value={formData.neighborhood || ''}
-          onChange={(e) => updateFormData('neighborhood', e.target.value)}
+          placeholder="Selecciona un barrio"
+          value={formData.neighborhood_id || ''}
+          onChange={(value) => updateFormData('neighborhood_id', value || '')}
+          data={getNeighborhoodOptions() || []}
           required
+          disabled={loadingNeighborhoods || !formData.administrative_area_id}
         />
 
         <Group mt="md">

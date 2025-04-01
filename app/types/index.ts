@@ -4,6 +4,8 @@ export * from './ask';
 export * from './menu-options';
 export * from './follow-up-report';
 
+export type SearchParams = Record<string, string | number | boolean>;
+
 export type QueryResult<T> = {
   count: number;
   next: string;

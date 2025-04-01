@@ -1,57 +1,10 @@
-import {
-  IconCheck,
-  IconClockHour4,
-  IconQuestionMark,
-  IconSearch,
-} from '@tabler/icons-react';
+import { IconSearch } from '@tabler/icons-react';
 import { Button, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
-import { useAppContext } from '@/app/context';
-import { ViewEnum } from '@/app/types';
+import { useFollowUpReportDetails } from '@/app/hooks';
 import { CustomHeader } from '../ui';
 
 export function FollowUpDetails() {
-  const { followUpData, setCurrentView } = useAppContext();
-
-  const getStatusInfo = () => {
-    switch (followUpData?.status) {
-      case 'PENDING':
-        return {
-          label: 'Pendiente',
-          color: 'orange',
-          icon: <IconClockHour4 size={15} />,
-          description:
-            'Tu caso está pendiente de revisión por nuestro equipo. Vuelve a consultarlo más tarde.',
-        };
-      case 'IN_PROGRESS':
-        return {
-          label: 'En proceso',
-          color: 'blue',
-          icon: <IconClockHour4 size={15} />,
-          description: 'Tu caso está siendo atendido por nuestro equipo.',
-        };
-      case 'COMPLETED':
-        return {
-          label: 'Resuelto',
-          color: 'green',
-          icon: <IconCheck size={15} />,
-          description: 'Tu caso ha sido resuelto exitosamente.',
-        };
-      default:
-        return {
-          label: 'Desconocido',
-          color: 'gray',
-          icon: <IconQuestionMark size={15} />,
-          description: 'No se pudo determinar el estado de tu caso.',
-        };
-    }
-  };
-
-  const statusInfo = getStatusInfo();
-
-  const handleBackToSearch = () => {
-    setCurrentView(ViewEnum.FOLLOW_UP);
-  };
-
+  const { followUpData, statusInfo, handleBackToSearch } = useFollowUpReportDetails();
   return (
     <>
       <Stack>
@@ -84,22 +37,17 @@ export function FollowUpDetails() {
                   {statusInfo.label}
                 </Chip>
               </Group>
-
-              <Text size="xs" c="dimmed">
-                {statusInfo.description}
-              </Text>
             </Stack>
           </Group>
-          {followUpData?.observations && (
-            <Stack>
-              <Text size="sm" fw={600}>
-                Observaciones:
-              </Text>
-              <Text size="xs" p="xs" bg="gray.0" style={{ borderRadius: '4px' }}>
-                {followUpData.observations}
-              </Text>
-            </Stack>
-          )}
+          <Stack>
+            <Text size="sm" fw={600}>
+              Observaciones:
+            </Text>
+            <Text size="xs" p="xs" bg="gray.0" style={{ borderRadius: '4px' }}>
+              {followUpData?.observations ||
+                'Tu caso está pendiente de revisión por nuestro equipo. Vuelve a consultarlo más tarde.'}
+            </Text>
+          </Stack>
         </Stack>
 
         <Divider my="md" />

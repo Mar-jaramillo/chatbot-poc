@@ -1,14 +1,6 @@
-import {
-  IconCalendar,
-  IconHome2,
-  IconMap,
-  IconMapPin,
-  IconNotes,
-  IconUsers,
-} from '@tabler/icons-react';
-import { Button, Divider, Group, Skeleton, Stack, Text, ThemeIcon } from '@mantine/core';
-import { ResponsibleTeam, useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
-import { ReportData } from '@/app/types';
+import { Button, Divider, Group, Stack, Text, ThemeIcon } from '@mantine/core';
+import { useSummaryReport } from '@/app/hooks';
+import type { ReportData } from '@/app/types';
 import { CustomHeader } from '../ui';
 
 type SummaryReportProps = ReportData & {
@@ -16,60 +8,8 @@ type SummaryReportProps = ReportData & {
   onCancel: () => void;
 };
 
-type ReportField = {
-  label: string;
-  key: keyof ReportData['data'];
-  icon: React.ReactNode;
-  format?: (value: string, teams?: ResponsibleTeam[]) => React.ReactNode;
-};
-
 export function SummaryReport({ data, onConfirm, onCancel }: SummaryReportProps) {
-  const { teams, isLoading } = useResponsibleTeams();
-
-  const formatTeamName = (teamId: string, teams?: ResponsibleTeam[]) => {
-    if (!teams || teams.length === 0 || !teamId) {
-      return teamId || '-';
-    }
-
-    const team = teams.find((t) => t.id === teamId);
-    return team ? team.name : teamId;
-  };
-
-  const reportFields: ReportField[] = [
-    {
-      label: 'Dirección',
-      key: 'incident_address',
-      icon: <IconHome2 size={16} />,
-    },
-    {
-      label: 'Comuna',
-      key: 'administrative_area',
-      icon: <IconMap size={16} />,
-    },
-    {
-      label: 'Barrio',
-      key: 'neighborhood',
-      icon: <IconMapPin size={16} />,
-    },
-    {
-      label: 'Fecha',
-      key: 'request_date',
-      icon: <IconCalendar size={16} />,
-    },
-    {
-      label: 'Descripción',
-      key: 'description',
-      icon: <IconNotes size={16} />,
-    },
-    {
-      label: 'Equipo asignado',
-      key: 'referred_to',
-      icon: <IconUsers size={16} />,
-      format: (value) =>
-        isLoading ? <Skeleton height={16} width="70%" /> : formatTeamName(value, teams),
-    },
-  ];
-
+  const { reportFields, teams } = useSummaryReport(data);
   return (
     <Stack>
       <CustomHeader

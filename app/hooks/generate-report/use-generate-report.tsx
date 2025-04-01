@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { API_BASE_URL, REPORT_STEPS } from '../consts';
-import { useAppContext } from '../context';
-import { useUpdateCustomer } from '../services';
-import { ReportData } from '../types';
-import { useFormOptions } from './use-form-options';
+import { API_BASE_URL, REPORT_STEPS } from '../../consts';
+import { useAppContext } from '../../context';
+import { useUpdateCustomer } from '../../services';
+import { ReportData } from '../../types';
+import { useFormOptions } from '../use-form-options';
 
 export function useGenerateReport() {
   const {
@@ -159,8 +159,8 @@ export function useGenerateReport() {
   const isLocationStepValid = () => {
     return (
       (formData.incident_address || '').trim() !== '' &&
-      (formData.administrative_area || '').trim() !== '' &&
-      (formData.neighborhood || '').trim() !== ''
+      (formData.administrative_area_id || '').trim() !== '' &&
+      (formData.neighborhood_id || '').trim() !== ''
     );
   };
 

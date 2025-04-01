@@ -1,22 +1,24 @@
-// app/services/followUpService.ts
+'use client';
+
+import { useMutation } from '@tanstack/react-query';
 import { FollowUpData } from '@/app/types';
-import { fetchApi } from './api';
+import { baseApi } from './base-api';
 
-export const followUpService = {
-  // Buscar un caso por número de referencia
-  getByReferenceNumber: (customerId: string, referenceNumber: string) =>
-    fetchApi<FollowUpData>(
-      `/chats/conversations/follow-up/?customer_id=${customerId}&reference_number=${referenceNumber}`
-    ),
+type SearchCaseParams = {
+  customerId: string;
+  referenceNumber: string;
+};
 
-  // Enviar encuesta de satisfacción
-  submitSatisfaction: (data: {
-    customer_id: string;
-    is_satisfactory: boolean;
-    customer_feedback: string | null;
-  }) =>
-    fetchApi('/chats/conversations/satisfaction/', {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
+export const searchCase = async ({ customerId, referenceNumber }: SearchCaseParams) => {
+  return baseApi
+    .get('chats/conversations/follow-up/', {
+      searchParams: { customer_id: customerId, reference_number: referenceNumber },
+    })
+    .json<FollowUpData>();
+};
+
+export const useSearchCaseMutation = () => {
+  return useMutation({
+    mutationFn: searchCase,
+  });
 };
