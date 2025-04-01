@@ -1,7 +1,6 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
@@ -25,7 +24,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <Notifications position="bottom-right" zIndex={1000} />
         <AppProvider>{children}</AppProvider>
-        {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools initialIsOpen={false} />}
+        {process.env.NODE_ENV !== 'production'}
       </QueryClientProvider>
     </MantineProvider>
   );

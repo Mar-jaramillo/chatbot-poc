@@ -4,20 +4,19 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { API_BASE_URL } from '@/app/consts';
 import { CostumerInitialInfo, FollowUpData, ReportData, ViewEnum, ViewType } from '@/app/types';
 import { ConfirmationModal } from '../components/ui';
-import { useCreateCustomer } from '../services';
+import { useCreateCustomer, useCreateReport } from '../services';
 
 interface AppContextProps {
   userServerResponse: CostumerInitialInfo | null;
   currentView: ViewType;
   reportData: ReportData;
-  followUpData: FollowUpData | null; // Add follow-up data
+  followUpData: FollowUpData | null;
   setCurrentView: (view: ViewType) => void;
   setUserServerResponse: (data: CostumerInitialInfo | null) => void;
   setReportData: React.Dispatch<React.SetStateAction<ReportData>>;
-  setFollowUpData: (data: FollowUpData | null) => void; // Add setter for follow-up data
+  setFollowUpData: (data: FollowUpData | null) => void;
   onSubmitInitialData: (data: CostumerInitialInfo) => Promise<void>;
   handleReportConfirm: () => Promise<void>;
   handleReportUpdate: (data: ReportData['data']) => void;
@@ -105,46 +104,35 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const { mutateAsync: createReport } = useCreateReport();
+
   const handleReportConfirm = async () => {
     try {
       const userId = userServerResponse?.id;
-      const response = await fetch(`${API_BASE_URL}/chats/conversations/case/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...reportData.data,
-          customer_id: userId,
-        }),
+
+      const responseData = await createReport({
+        ...reportData.data,
+        customer_id: userId,
       });
 
-      if (response.ok) {
-        const responseData = await response.json();
+      setReportData((prev) => ({
+        ...prev,
+        data: {
+          ...prev.data,
+          reference_number: responseData.reference_number,
+          status: responseData.status,
+        },
+      }));
 
-        // Guardar el número de referencia y el estado en reportData
-        setReportData((prev) => ({
-          ...prev,
-          data: {
-            ...prev.data,
-            reference_number: responseData.reference_number,
-            status: responseData.status,
-          },
-        }));
-
-        notifications.show({
-          id: 'report-success',
-          title: 'Reporte enviado',
-          message: 'Tu reporte ha sido enviado exitosamente',
-          color: 'green',
-          icon: <IconCheck size={16} />,
-          autoClose: 3000,
-        });
-
-        setCurrentView(ViewEnum.REFERENCE_NUMBER);
-      } else {
-        throw new Error('Error al crear el reporte');
-      }
+      notifications.show({
+        id: 'report-success',
+        title: 'Reporte enviado',
+        message: 'Tu reporte ha sido enviado exitosamente',
+        color: 'green',
+        icon: <IconCheck size={16} />,
+        autoClose: 3000,
+      });
+      setCurrentView(ViewEnum.REFERENCE_NUMBER);
     } catch (error) {
       notifications.show({
         id: 'report-error',
@@ -244,7 +232,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         isComplete: false,
       });
     } else if (option === ViewEnum.FOLLOW_UP) {
-      // Clear follow-up data when selecting follow-up from menu
       setFollowUpData(null);
     }
     setCurrentView(option);

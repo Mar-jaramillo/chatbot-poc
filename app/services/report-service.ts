@@ -1,14 +1,9 @@
-// app/services/reportService.ts
-import { ReportData } from '@/app/types';
-import { fetchApi } from './api';
+import { useMutation } from '@tanstack/react-query';
+import { ReportFormData } from '@/app/types';
+import { baseApi } from './base-api';
 
-export const reportService = {
-  // Crear un nuevo reporte
-  createReport: (data: ReportData['data'] & { customer_id: string }) =>
-    fetchApi('/chats/conversations/case/', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-
-  // Otros métodos relacionados con reportes
-};
+export function useCreateReport() {
+  return useMutation<ReportFormData, Error, Partial<ReportFormData>>({
+    mutationFn: (report) => baseApi.post('chats/conversations/case/', { json: report }).json(),
+  });
+}

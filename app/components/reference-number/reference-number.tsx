@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconCheck, IconClockHour4, IconCopy } from '@tabler/icons-react';
-import { ActionIcon, Chip, Group, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Chip, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { CustomHeader } from '../ui';
 
 interface ReferenceNumberProps {
@@ -52,7 +52,7 @@ export function ReferenceNumber({ referenceNumber, status }: ReferenceNumberProp
           </Chip>
         </Group>
       </Stack>
-
+      <Divider />
       <Text size="xs" c="dimmed" ta="center">
         Este es tu <strong>identificador único</strong>. Guárdalo para que puedas consultar el
         estado de tu caso en cualquier momento.
