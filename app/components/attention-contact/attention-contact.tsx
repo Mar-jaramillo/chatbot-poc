@@ -17,7 +17,10 @@ export function AttentionContact() {
 
   return (
     <Stack>
-      <CustomHeader title="🚨 Líneas de Atención de Emergencia" subtitle="" />
+      <CustomHeader
+        title="🚨 Líneas de Atención de Emergencia"
+        subtitle="Conoce los números de contacto esenciales para situaciones de emergencia"
+      />
 
       {contactLines.map((line, index) => (
         <ContactCard

@@ -1,5 +1,5 @@
 import { IconClockHour4, IconPhone } from '@tabler/icons-react';
-import { Box, Button, Chip, Divider, Stack, Text } from '@mantine/core';
+import { Box, Button, Chip, Divider, Stack, Text, Title } from '@mantine/core';
 
 type ContactCardProps = {
   title: string;
@@ -12,7 +12,9 @@ export function ContactCard({ title, number, description, available }: ContactCa
   return (
     <Box>
       <Stack mb={8} gap="xs">
-        <Text fw={600}>{title}</Text>
+        <Title order={5} fw={600}>
+          {title}
+        </Title>
         <Button
           justify="start"
           leftSection={<IconPhone size={14} />}
@@ -20,7 +22,7 @@ export function ContactCard({ title, number, description, available }: ContactCa
           variant="subtle"
           href={`tel:${number}`}
           fw={700}
-          size="md"
+          size="sx"
         >
           {number}
         </Button>
