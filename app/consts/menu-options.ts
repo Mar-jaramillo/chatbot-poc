@@ -31,7 +31,7 @@ export const INITIAL_MENU_OPTIONS: MenuOption[] = [
   {
     id: 'attention_contact',
     label: 'Lineas de atención - urgencias',
-    action: ViewEnum.CHAT, //TODO: Change to ViewEnum.ATTENTION_CONTACT
+    action: ViewEnum.ATTENTION_CONTACT,
     variant: 'outline',
   },
   {

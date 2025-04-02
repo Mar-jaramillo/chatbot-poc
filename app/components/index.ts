@@ -9,3 +9,4 @@ export * from './popover-chat';
 export * from './ui';
 export * from './reference-number';
 export * from './follow-up-report';
+export * from './attention-contact';

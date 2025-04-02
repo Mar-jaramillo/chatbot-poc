@@ -7,3 +7,4 @@ export * from './use-form-options';
 export * from './use-responsible-teams';
 export * from './follow-up-report';
 export * from './initial-form';
+export * from './attention-contact';

@@ -1,4 +1,4 @@
-import { useGetActionPlanEvidence, useGetCommunes } from '../../services/geolocalization';
+import { useGetCommunes, useGetNeighborhoods } from '../../services/geolocalization';
 import { ReportFormData } from '../../types';
 
 export function useLocationStep(
@@ -6,7 +6,7 @@ export function useLocationStep(
   updateFormData: (field: string, value: string) => void
 ) {
   const { data: communes, isPending: loadingCommunes } = useGetCommunes();
-  const { data: neighborhoods, isPending: loadingNeighborhoods } = useGetActionPlanEvidence(
+  const { data: neighborhoods, isPending: loadingNeighborhoods } = useGetNeighborhoods(
     formData.administrative_area_id
   );
 

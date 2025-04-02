@@ -9,7 +9,7 @@ export function useGetCommunes() {
     queryFn: () => fetchApi<QueryResult<ValueDetails>>('/chats/conversations/cali-communes/'),
   });
 }
-export function useGetActionPlanEvidence(commune_id?: string) {
+export function useGetNeighborhoods(commune_id?: string) {
   return useQuery<QueryResult<ValueDetails>>({
     queryKey: ['neighborhoods', commune_id],
     queryFn: ({ signal }) =>

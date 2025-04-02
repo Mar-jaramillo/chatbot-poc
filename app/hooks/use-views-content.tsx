@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 import { DeepChat } from 'deep-chat-react';
-import { Paper, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { useAppContext } from '@/app/context';
 import { useDeepChatConnect } from '@/app/hooks';
 import {
+  AttentionContact,
   FollowUpDetails,
   FollowUpReport,
   GenerateReport,
@@ -24,8 +25,6 @@ export function useViewsContent() {
     userServerResponse,
     currentView,
     reportData,
-    handleReportUpdate,
-    handleReportComplete,
     handleReportCancel,
     handleReportConfirm,
     handleSurveyComplete,
@@ -36,19 +35,14 @@ export function useViewsContent() {
     switch (currentView) {
       case ViewEnum.INITIAL:
         return <InitialOptions />;
+      case ViewEnum.ATTENTION_CONTACT:
+        return <AttentionContact />;
       case ViewEnum.LOGIN:
         return <InitialFormConversation />;
       case ViewEnum.MENU:
         return <MenuOptions />;
       case ViewEnum.REPORT:
-        return (
-          <GenerateReport
-            reportData={reportData}
-            onUpdateData={handleReportUpdate}
-            onComplete={handleReportComplete}
-            onCancel={handleReportCancel}
-          />
-        );
+        return <GenerateReport />;
       case ViewEnum.SUMMARY:
         return (
           <SummaryReport

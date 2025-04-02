@@ -39,9 +39,9 @@ export function FollowUpDetails() {
               </Group>
             </Stack>
           </Group>
-          <Stack>
-            <Text size="sm" fw={600}>
-              Observaciones:
+          <Stack gap="xs">
+            <Text size="sm" fw={600} pt="md">
+              Observación:
             </Text>
             <Text size="xs" p="xs" bg="gray.0" style={{ borderRadius: '4px' }}>
               {followUpData?.observations ||

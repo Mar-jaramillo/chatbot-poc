@@ -6,6 +6,7 @@ import { ViewEnum } from '@/app/types';
 export function BackToMenuButton() {
   const { handleGoToMenu, currentView } = useAppContext();
   if (
+    currentView === ViewEnum.ATTENTION_CONTACT ||
     currentView === ViewEnum.INITIAL ||
     currentView === ViewEnum.LOGIN ||
     currentView === ViewEnum.MENU

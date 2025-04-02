@@ -9,8 +9,8 @@ import {
 } from '@tabler/icons-react';
 import { Skeleton } from '@mantine/core';
 import { useResponsibleTeams } from '@/app/hooks/use-responsible-teams';
-import { useGetActionPlanEvidence, useGetCommunes } from '@/app/services/geolocalization';
-import type { ReportField, ReportFormData, ResponsibleTeam } from '@/app/types';
+import { useGetCommunes, useGetNeighborhoods } from '@/app/services/geolocalization';
+import type { ReportField, ReportFormData, ResponsibleTeam, ValueDetails } from '@/app/types';
 
 export function useSummaryReport(data: ReportFormData) {
   const [communeName, setCommuneName] = useState<string>('');
@@ -18,7 +18,7 @@ export function useSummaryReport(data: ReportFormData) {
 
   const { teams, isLoading: isLoadingTeams } = useResponsibleTeams();
   const { data: communes, isPending: isLoadingCommunes } = useGetCommunes();
-  const { data: neighborhoods, isPending: isLoadingNeighborhoods } = useGetActionPlanEvidence(
+  const { data: neighborhoods, isPending: isLoadingNeighborhoods } = useGetNeighborhoods(
     data.administrative_area_id
   );
 
@@ -31,7 +31,9 @@ export function useSummaryReport(data: ReportFormData) {
 
   useEffect(() => {
     if (neighborhoods && neighborhoods.results && data.neighborhood_id) {
-      const neighborhood = neighborhoods.results.find((item) => item.id === data.neighborhood_id);
+      const neighborhood = neighborhoods.results.find(
+        (item: ValueDetails) => item.id === data.neighborhood_id
+      );
       setNeighborhoodName(neighborhood ? neighborhood.name : data.neighborhood_id);
     }
   }, [neighborhoods, data.neighborhood_id]);

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export enum ViewEnum {
+  ATTENTION_CONTACT = 'attention_contact',
   INITIAL = 'initial',
   LOGIN = 'login',
   MENU = 'menu',
