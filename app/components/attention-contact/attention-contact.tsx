@@ -1,6 +1,6 @@
 import { Stack, Text } from '@mantine/core';
 import { useGetAttentionContact } from '@/app/services/attention-contact';
-import { CustomHeader } from '../ui';
+import { CloseButton, CustomHeader } from '../ui';
 import { ContactCard } from './attention-card';
 
 export function AttentionContact() {
@@ -17,6 +17,7 @@ export function AttentionContact() {
 
   return (
     <Stack>
+      <CloseButton />
       <CustomHeader
         title="🚨 Líneas de Atención de Emergencia"
         subtitle="Conoce los números de contacto esenciales para situaciones de emergencia"

@@ -1,7 +1,7 @@
 import { IconMailbox, IconUser } from '@tabler/icons-react';
 import { Box, Group, Tabs, Text } from '@mantine/core';
 import { useInitialFormConversation } from '@/app/hooks';
-import { CustomHeader } from '../ui';
+import { CloseButton, CustomHeader } from '../ui';
 import { PanelContactData } from './panel-contact-data';
 import { PanelPersonalData } from './panel-personal-data';
 
@@ -18,6 +18,7 @@ export function InitialFormConversation() {
 
   return (
     <>
+      <CloseButton />
       <CustomHeader
         title={
           <Group gap={5}>
